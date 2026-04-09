@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Warm cream background for premium feel */
+    --background: 40 33% 98%;
+    --foreground: 150 10% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 150 10% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 10% 15%;
+
+    /* Deep forest green - premium and trustworthy */
+    --primary: 152 45% 25%;
+    --primary-foreground: 40 33% 98%;
+
+    /* Warm sand accent */
+    --secondary: 38 35% 92%;
+    --secondary-foreground: 150 10% 15%;
+
+    --muted: 40 20% 95%;
+    --muted-foreground: 150 5% 45%;
+
+    /* Gold accent for premium touches */
+    --accent: 43 74% 49%;
+    --accent-foreground: 150 10% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 152 45% 25%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 150 10% 8%;
+    --foreground: 40 33% 98%;
+
+    --card: 150 10% 12%;
+    --card-foreground: 40 33% 98%;
+
+    --popover: 150 10% 12%;
+    --popover-foreground: 40 33% 98%;
+
+    --primary: 152 45% 35%;
+    --primary-foreground: 40 33% 98%;
+
+    --secondary: 150 10% 18%;
+    --secondary-foreground: 40 33% 98%;
+
+    --muted: 150 10% 18%;
+    --muted-foreground: 40 15% 65%;
+
+    --accent: 43 74% 49%;
+    --accent-foreground: 150 10% 15%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 150 10% 18%;
+    --input: 150 10% 18%;
+    --ring: 152 45% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  a,
+  button,
+  input,
+  textarea,
+  select {
+    font-family: var(--font-instrument-sans);
+  }
+}
