@@ -104,7 +104,7 @@ export default function CheckoutPage() {
     nextWeek.setDate(today.getDate() + 7)
 
     const monday = new Date(nextWeek)
-    monday.setDate(nextWeek.getDay() - nextWeek.getDay() + 1)
+    monday.setDate(nextWeek.getDate() - nextWeek.getDay() + 1)
 
     const friday = new Date(monday)
     friday.setDate(monday.getDate() + 4)
@@ -548,7 +548,7 @@ export default function CheckoutPage() {
     return (
       customerInfo.firstName && customerInfo.lastName && customerInfo.email && phoneNumber.trim()
     )
-  }, [customerInfo, phoneNumber, addressUnverified])
+  }, [customerInfo, phoneNumber])
 
   if (!selectedPackage) {
     return (
