@@ -17,6 +17,7 @@ import {
   Dog,
   Droplets,
   Sparkles,
+  Snowflake,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
@@ -61,9 +62,13 @@ type ServiceType =
   | "mosquito"
   | "plantcare"
   | "petwaste"
+  | "snow"
   | null
 
 type MosquitoPlan = "full" | "monthly" | "bimonthly"
+
+type SnowPricingMode = "seasonal" | "perPush"
+type SnowDrivewayLength = "short" | "medium" | "long"
 
 type Service = {
   id: Exclude<ServiceType, null>
@@ -100,6 +105,8 @@ export default function HomePage() {
   const [manualZip, setManualZip] = useState("")
   const [mosquitoPlan, setMosquitoPlan] = useState<MosquitoPlan>("full")
   const [numDogs, setNumDogs] = useState(1)
+  const [snowPricingMode, setSnowPricingMode] = useState<SnowPricingMode>("seasonal")
+  const [snowDrivewayLength, setSnowDrivewayLength] = useState<SnowDrivewayLength>("medium")
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
   const mockAddresses = [
@@ -223,6 +230,13 @@ export default function HomePage() {
       description: "Weekly dog waste pickup",
       blurb: "Reliable weekly pet waste pickup so your yard stays clean, sanitary, and family-friendly. Simple monthly billing with per-pet pricing.",
       Icon: Dog,
+    },
+    {
+      id: "snow",
+      name: "Snow Services",
+      description: "Driveway clearing & plowing",
+      blurb: "Snow removal for residential driveways. Choose a seasonal package priced by driveway length or pay per push. Available in select regions only: Fargo, New Jersey, and Iowa.",
+      Icon: Snowflake,
     },
   ]
 
@@ -977,6 +991,169 @@ export default function HomePage() {
                   }
                 >
                   Sign Up for Pet Waste Service
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Snow Services Section */}
+      {selectedService === "snow" && (
+        <section className="pb-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-card rounded-2xl border border-border p-6 md:p-10 shadow-xl">
+                <div className="flex items-center gap-2 mb-3">
+                  <Snowflake className="w-5 h-5 text-primary" />
+                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                    Seasonal Service
+                  </span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                  Snow Services
+                </h2>
+                <p className="text-muted-foreground mb-4">
+                  Residential driveway snow clearing. Choose a seasonal package priced by driveway length, or pay per push.
+                </p>
+
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 border border-amber-200 mb-6">
+                  <MapPin className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-amber-900">Available in select regions only</p>
+                    <p className="text-amber-800 mt-0.5">
+                      Currently offered in <span className="font-medium">Fargo</span>,{" "}
+                      <span className="font-medium">New Jersey</span>, and{" "}
+                      <span className="font-medium">Iowa</span>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="inline-flex rounded-full border border-border p-1 mb-5 bg-secondary/50">
+                  <button
+                    type="button"
+                    onClick={() => setSnowPricingMode("seasonal")}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      snowPricingMode === "seasonal"
+                        ? "bg-primary text-primary-foreground shadow"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Seasonal package
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSnowPricingMode("perPush")}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      snowPricingMode === "perPush"
+                        ? "bg-primary text-primary-foreground shadow"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Per push
+                  </button>
+                </div>
+
+                {snowPricingMode === "seasonal" ? (
+                  <div className="mb-6">
+                    <p className="text-sm font-semibold text-foreground mb-3">
+                      Select your driveway length
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        {
+                          id: "short" as SnowDrivewayLength,
+                          label: "Short",
+                          sublabel: "1 car length",
+                          price: 350,
+                        },
+                        {
+                          id: "medium" as SnowDrivewayLength,
+                          label: "Medium",
+                          sublabel: "2–3 car lengths",
+                          price: 425,
+                        },
+                        {
+                          id: "long" as SnowDrivewayLength,
+                          label: "Long / Turnaround",
+                          sublabel: "Extra-long or with turnaround",
+                          price: 500,
+                        },
+                      ].map((tier) => (
+                        <button
+                          key={tier.id}
+                          type="button"
+                          onClick={() => setSnowDrivewayLength(tier.id)}
+                          className={`text-left rounded-xl p-4 transition-all ${
+                            snowDrivewayLength === tier.id
+                              ? "ring-2 ring-primary bg-primary/5"
+                              : "border border-border hover:border-primary/40"
+                          }`}
+                        >
+                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                            {tier.label}
+                          </p>
+                          <p className="text-2xl font-bold text-foreground">
+                            ${tier.price}
+                          </p>
+                          <p className="text-xs text-muted-foreground">{tier.sublabel}</p>
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      Seasonal pricing ranges from $350 to $500 depending on driveway length.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mb-6">
+                    <div className="flex items-end justify-between p-5 rounded-xl bg-primary/5 border border-primary/20">
+                      <div>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                          Pay per push
+                        </p>
+                        <div className="flex items-baseline gap-1">
+                          <p className="text-4xl md:text-5xl font-bold text-foreground">$50</p>
+                          <span className="text-muted-foreground">/ push</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Billed each time we clear your driveway.
+                        </p>
+                      </div>
+                      <Snowflake className="w-12 h-12 text-primary/40 hidden sm:block" />
+                    </div>
+                  </div>
+                )}
+
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Driveway clearing after each snowfall</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Seasonal or per-push billing</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Pricing based on driveway length</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Serviced by local crews</span>
+                  </li>
+                </ul>
+
+                <Button
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  onClick={() =>
+                    window.open(
+                      "https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search",
+                      "_blank",
+                    )
+                  }
+                >
+                  Request Snow Service
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
