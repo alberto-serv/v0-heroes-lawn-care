@@ -661,7 +661,7 @@ export default function HomePage() {
       {selectedService === "irrigation" && (
         <section className="pb-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto space-y-6">
+            <div className="max-w-3xl mx-auto">
               <div className="bg-card rounded-2xl border border-border p-6 md:p-8 shadow-lg">
                 <div className="flex items-center gap-2 mb-3">
                   <Droplets className="w-5 h-5 text-primary" />
@@ -675,7 +675,7 @@ export default function HomePage() {
                 <p className="text-muted-foreground mb-6">
                   Repair of drip lines, sprinkler heads, and valve covers for up to six zones, plus end-of-season winterization.
                 </p>
-                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 p-5 rounded-xl bg-primary/5 border border-primary/20">
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 p-5 rounded-xl bg-primary/5 border border-primary/20 mb-6">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
                       Seasonal Price
@@ -695,13 +695,23 @@ export default function HomePage() {
                     </li>
                   </ul>
                 </div>
-              </div>
-              <div className="bg-card rounded-2xl shadow-xl border border-border overflow-hidden">
-                <iframe
-                  src="https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search"
-                  className="w-full h-[700px] border-0"
-                  title="Irrigation Service Request"
-                />
+                <Button
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  onClick={() => {
+                    const params = new URLSearchParams({
+                      package: "irrigation",
+                      address: addressInput || "",
+                      yardSize: yardSize.toString(),
+                      perVisitPrice: "349",
+                      packageTotal: "349",
+                      addressUnverified: showAddressField ? "true" : "false",
+                    })
+                    router.push(`/checkout?${params.toString()}`)
+                  }}
+                >
+                  Book Irrigation Service
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>

@@ -172,6 +172,18 @@ export default function CheckoutPage() {
         "Aeration with Overseeding",
       ],
     },
+    irrigation: {
+      name: "Irrigation Repair & Maintenance",
+      subtitle:
+        "Seasonal program covering drip lines, sprinkler heads, valve covers for up to six zones, plus end-of-season winterization",
+      monthlyPrice: 349,
+      packageTotal: 349,
+      features: [
+        "Drip line & sprinkler head repair",
+        "Valve covers (up to 6 zones)",
+        "Fall winterization",
+      ],
+    },
   }
 
   const availableDates = useMemo(() => {
@@ -250,18 +262,27 @@ export default function CheckoutPage() {
     const address = searchParams.get("address")
     const size = searchParams.get("yardSize") || searchParams.get("size")
     const unverified = searchParams.get("addressUnverified") === "true"
+    const perVisitPriceParam = searchParams.get("perVisitPrice")
+    const packageTotalParam = searchParams.get("packageTotal")
 
     if (packageId && packages[packageId]) {
       const basePackage = packages[packageId]
       const yardSizeNum = size ? Number.parseInt(size) : 2000
 
-      const pricing = getPackagePrice(packageId, yardSizeNum)
+      // Prefer URL-provided pricing (perVisitPrice / packageTotal). Fall back to
+      // the lookup table for legacy links that don't include them.
+      const urlPerVisit = perVisitPriceParam ? Number.parseFloat(perVisitPriceParam) : NaN
+      const urlTotal = packageTotalParam ? Number.parseFloat(packageTotalParam) : NaN
+      const fallback = getPackagePrice(packageId, yardSizeNum)
+
+      const monthlyPrice = Number.isFinite(urlPerVisit) ? urlPerVisit : fallback.monthly || basePackage.monthlyPrice
+      const packageTotal = Number.isFinite(urlTotal) ? urlTotal : fallback.total || basePackage.packageTotal
 
       const dynamicPackage = {
         ...basePackage,
         id: packageId,
-        monthlyPrice: pricing.monthly,
-        packageTotal: pricing.total,
+        monthlyPrice,
+        packageTotal,
       }
       setSelectedPackage(dynamicPackage)
       setYardSize(yardSizeNum)
