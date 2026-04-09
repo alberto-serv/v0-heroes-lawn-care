@@ -56,7 +56,7 @@ export default function ConfirmationPage() {
         dateRange: dateRange || "Next week",
       })
     }
-  }, [])
+  }, [searchParams])
 
   const addOnsList = bookingData.addOns
     ? bookingData.addOns.split(",").map((addon) => {
