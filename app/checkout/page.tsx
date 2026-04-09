@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
-import { ArrowLeft, User, Check, MapPin, Search, AlertCircle, Loader2, LocateFixed } from "lucide-react"
+
+import { ArrowLeft, User, Check, MapPin, Search, AlertCircle, Loader2, LocateFixed, ChevronDown, ChevronUp } from "lucide-react"
 
 const getPackagePrice = (packageId: string, yardSize: number) => {
   const pricingTable = {
@@ -71,6 +72,7 @@ export default function CheckoutPage() {
   const [state, setState] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showManualEntry, setShowManualEntry] = useState(false)
+  const [showFeatures, setShowFeatures] = useState(false)
   const [addressNotRecognized, setAddressNotRecognized] = useState(false)
 
   // Helper function to parse address components
@@ -104,7 +106,7 @@ export default function CheckoutPage() {
     nextWeek.setDate(today.getDate() + 7)
 
     const monday = new Date(nextWeek)
-    monday.setDate(nextWeek.getDate() - nextWeek.getDay() + 1)
+    monday.setDate(nextWeek.getDay() - nextWeek.getDay() + 1)
 
     const friday = new Date(monday)
     friday.setDate(monday.getDate() + 4)
@@ -403,13 +405,21 @@ export default function CheckoutPage() {
       // Mock address based on geolocation
       const mockGeoAddress = "123 Current Location Dr, The Woodlands, TX 77380"
       setAddressInput(mockGeoAddress)
+      setServiceAddress(mockGeoAddress)
       setShowSuggestions(false)
+      parseAddressComponents(mockGeoAddress)
 
       // Automatically trigger address lookup
       handleAddressLookupWithAddress(mockGeoAddress)
-    } catch (error) {
-      console.error("Geolocation error:", error)
-      alert("Unable to get your location. Please enter your address manually.")
+    } catch {
+      // Fallback: simulate a detected address when geolocation is unavailable
+      await new Promise((resolve) => setTimeout(resolve, 800))
+      const mockGeoAddress = "123 Current Location Dr, The Woodlands, TX 77380"
+      setAddressInput(mockGeoAddress)
+      setServiceAddress(mockGeoAddress)
+      setShowSuggestions(false)
+      parseAddressComponents(mockGeoAddress)
+      handleAddressLookupWithAddress(mockGeoAddress)
     } finally {
       setIsGeolocating(false)
     }
@@ -548,7 +558,7 @@ export default function CheckoutPage() {
     return (
       customerInfo.firstName && customerInfo.lastName && customerInfo.email && phoneNumber.trim()
     )
-  }, [customerInfo, phoneNumber])
+  }, [customerInfo, phoneNumber, addressUnverified])
 
   if (!selectedPackage) {
     return (
@@ -565,281 +575,66 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="container py-8">
         {/* Header */}
-        <div className="flex items-center mb-8">
-          <Link href="/" className="flex items-center text-primary hover:text-primary/80 mr-6">
+        <div className="mb-8">
+          <Link href="/" className="inline-flex items-center text-primary hover:text-primary/80 mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Plans
           </Link>
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Complete Your Booking</h1>
+          <h1 className="font-bold text-gray-900 text-3xl text-center">Book your Service</h1>
         </div>
 
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column - Order Flow and Details */}
-          <div className="lg:col-span-7">
+        {/* Centered Layout */}
+        <div className="max-w-2xl mx-auto">
             <div className="space-y-6">
-              {/* Address Entry Card */}
-              <div className="bg-white border border-border rounded-xl p-5 shadow-sm">
-                <div className="flex items-start gap-3 mb-3">
-                  <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h3 className="font-semibold text-foreground">Enter your address for accurate pricing</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Current prices shown are estimates for smaller properties. Enter your service address to get your exact quote.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3" ref={suggestionRef}>
-                  <div className="relative flex-1">
-                    <button
-                      type="button"
-                      onClick={handleGeolocation}
-                      disabled={isGeolocating}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors disabled:opacity-50 z-10"
-                      title="Use my current location"
-                    >
-                      <LocateFixed className={`h-5 w-5 ${isGeolocating ? "animate-pulse" : ""}`} />
-                    </button>
-                    <Input
-                      type="text"
-                      placeholder="Enter your service address"
-                      value={addressInput}
-                      onChange={(e) => setAddressInput(e.target.value)}
-                      className="pl-10 h-12 bg-white border-gray-200"
-                    />
-                    {showSuggestions && addressSuggestions.length > 0 && (
-                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
-                        {addressSuggestions.map((suggestion, index) => (
-                          <button
-                            key={index}
-                            type="button"
-                            onClick={() => handleSelectSuggestion(suggestion)}
-                            className="w-full px-4 py-3 text-left text-sm hover:bg-green-50 flex items-center gap-2 transition-colors"
-                          >
-                            <MapPin className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                            {suggestion}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <Button
-                    onClick={handleAddressLookup}
-                    disabled={isLookingUpAddress || !addressInput.trim()}
-                    className="h-12 px-5 bg-green-200 hover:bg-green-300 text-green-800 font-medium"
-                  >
-                    {isLookingUpAddress ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <>
-                        <Search className="h-4 w-4 mr-2" />
-                        Get Exact Quote
-                      </>
-                    )}
-                  </Button>
-                </div>
-                
-                {/* Manual Entry Option */}
-                {showManualEntry && (
-                  <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                    <div className="flex items-start gap-3 mb-4">
-                      <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-sm text-amber-800 font-medium">Address not found in our system</p>
-                        <p className="text-sm text-amber-700 mt-1">
-                          {"Please enter your full address manually. We'll use estimated pricing based on minimum lot size."}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <div>
-                        <Label htmlFor="manualStreet" className="text-amber-800 text-sm">Street Address *</Label>
-                        <Input
-                          id="manualStreet"
-                          value={addressInput}
-                          onChange={(e) => setAddressInput(e.target.value)}
-                          placeholder="123 Main Street"
-                          className="mt-1 bg-white"
-                        />
-                      </div>
-                      <div className="grid grid-cols-3 gap-3">
-                        <div>
-                          <Label htmlFor="manualCity" className="text-amber-800 text-sm">City *</Label>
-                          <Input
-                            id="manualCity"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            placeholder="The Woodlands"
-                            className="mt-1 bg-white"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="manualState" className="text-amber-800 text-sm">State *</Label>
-                          <Input
-                            id="manualState"
-                            value={state}
-                            onChange={(e) => setState(e.target.value)}
-                            placeholder="TX"
-                            className="mt-1 bg-white"
-                            maxLength={2}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="manualZip" className="text-amber-800 text-sm">ZIP *</Label>
-                          <Input
-                            id="manualZip"
-                            value={zipCode}
-                            onChange={(e) => setZipCode(e.target.value)}
-                            placeholder="77380"
-                            className="mt-1 bg-white"
-                          />
-                        </div>
-                      </div>
-                      <Button
-                        onClick={() => {
-                          const fullAddress = `${addressInput}, ${city}, ${state} ${zipCode}`
-                          handleAddressLookupWithAddress(fullAddress, true)
-                        }}
-                        disabled={!addressInput.trim() || !city.trim() || !state.trim() || !zipCode.trim()}
-                        className="w-full mt-2 h-10 bg-amber-600 hover:bg-amber-700 text-white"
-                      >
-                        Continue with This Address
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Address Not Recognized Warning */}
-                {addressNotRecognized && (
-                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <AlertCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-sm text-green-800 font-medium">Pricing based on minimum lot size</p>
-                        <p className="text-sm text-green-700 mt-1">
-                          {"We couldn't verify your property size. Prices shown are for properties up to 3,000 sq ft and may be adjusted after we measure your lawn."}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Property Details */}
-                {serviceAddress && (
-                  <div className="mt-5 pt-5 border-t border-border">
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-semibold text-foreground">Property Details</h4>
-                      <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">Adjust if needed</span>
-                    </div>
-                    <div className="bg-secondary/30 rounded-2xl p-6">
-                      <Slider
-                        value={[yardSize <= 3000 ? 1 : yardSize <= 5000 ? 2 : yardSize <= 7000 ? 3 : 4]}
-                        onValueChange={(value) => {
-                          const sizes = [3000, 3000, 4500, 6000, 8500]
-                          const newSize = sizes[value[0]]
-                          setYardSize(newSize)
-                          if (selectedPackage) {
-                            const newPricing = getPackagePrice(selectedPackage.id, newSize)
-                            setSelectedPackage((prev) => ({
-                              ...prev,
-                              monthlyPrice: newPricing.monthly,
-                              packageTotal: newPricing.total,
-                            }))
-                          }
-                        }}
-                        max={4}
-                        min={1}
-                        step={1}
-                        className="w-full mb-4"
-                      />
-                      <div className="flex justify-between text-sm">
-                        {[
-                          { label: "< 3k", value: 1 },
-                          { label: "3-5k", value: 2 },
-                          { label: "5-7k", value: 3 },
-                          { label: "7-10k", value: 4 },
-                        ].map((option) => {
-                          const currentValue = yardSize <= 3000 ? 1 : yardSize <= 5000 ? 2 : yardSize <= 7000 ? 3 : 4
-                          return (
-                            <button
-                              key={option.value}
-                              type="button"
-                              onClick={() => {
-                                const sizes = [3000, 3000, 4500, 6000, 8500]
-                                const newSize = sizes[option.value]
-                                setYardSize(newSize)
-                                if (selectedPackage) {
-                                  const newPricing = getPackagePrice(selectedPackage.id, newSize)
-                                  setSelectedPackage((prev) => ({
-                                    ...prev,
-                                    monthlyPrice: newPricing.monthly,
-                                    packageTotal: newPricing.total,
-                                  }))
-                                }
-                              }}
-                              className={`transition-colors ${
-                                currentValue === option.value 
-                                  ? "text-primary font-semibold" 
-                                  : "text-muted-foreground hover:text-foreground"
-                              }`}
-                            >
-                              {option.label}
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
               {/* Service Selection */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-base md:text-lg">
-                    <Check className="w-5 h-5 mr-2 text-primary" />
-                    Service Selection
+                    
+                    Your Service 
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-green-50 p-6 rounded-lg">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{selectedPackage.name}</h3>
-                        <p className="text-gray-600">{selectedPackage.subtitle}</p>
-                      </div>
-                      <div className="text-right">
-                        {addressUnverified && (
-                          <span className="text-xs text-green-600 font-medium block mb-1">Starting at</span>
-                        )}
-                        <span className="text-xl md:text-2xl font-bold text-primary">
-                          ${selectedPackage.monthlyPrice.toFixed(2)}
-                        </span>
-                        <span className="text-gray-600">/visit</span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="font-semibold mb-3">Package Includes:</h4>
-                        <ul className="space-y-2">
-                          {selectedPackage.features.map((feature, index) => (
-                            <li key={index} className="flex items-start text-sm">
-                              <Check className="w-4 h-4 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="bg-white p-4 rounded-lg">
-                        <h4 className="font-semibold mb-3">Property Details:</h4>
-                        <div className="space-y-4 text-sm">
-                          <div className="flex justify-between items-center">
-                            <span className="text-gray-700 font-medium">Estimated yard size:</span>
-                            <span className="font-semibold text-emerald-700">{getYardSizeRange(yardSize)} sq ft</span>
-                          </div>
+                  <div className="bg-green-50 p-4 md:p-6 rounded-lg">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 mb-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                          <h3 className="text-lg md:text-xl font-bold text-gray-900">{selectedPackage.name}</h3>
+                          {yardSize > 10000 ? (
+                            <span className="text-lg font-bold text-foreground">Contact Us for Pricing</span>
+                          ) : (
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-lg md:text-2xl font-bold text-primary">
+                                ${selectedPackage.monthlyPrice.toFixed(2)}
+                              </span>
+                              <span className="text-gray-600 text-sm">/visit</span>
+                            </div>
+                          )}
                         </div>
+                        {yardSize <= 10000 && (
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            ${selectedPackage.packageTotal} total (6 visits)
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-600 mt-2">{selectedPackage.subtitle}</p>
+                        <button
+                          type="button"
+                          onClick={() => setShowFeatures(!showFeatures)}
+                          className="inline-flex items-center gap-1 text-sm text-primary font-medium mt-2 hover:underline"
+                        >
+                          {showFeatures ? "Hide details" : "See what's included"}
+                          {showFeatures ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                        </button>
+                        {showFeatures && (
+                          <ul className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1.5">
+                            {selectedPackage.features.map((feature: string, i: number) => (
+                              <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
+                                <Check className="h-4 w-4 text-primary shrink-0" />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -850,50 +645,38 @@ export default function CheckoutPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-base md:text-lg">
-                    <Check className="w-5 h-5 mr-2 text-primary" />
+                    
                     Additional Services (Optional)
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 mb-6">
-                    Enhance your lawn care with these optional add-on services. These can be added to your first service
-                    or scheduled separately.
-                  </p>
+                  
 
                   <div className="space-y-4">
                     {availableAddOns.map((addOn) => (
                       <div
                         key={addOn.id}
-                        className="flex items-start justify-between p-4 border rounded-lg hover:bg-gray-50"
+                        className="p-4 border rounded-lg hover:bg-gray-50"
                       >
-                        <div className="flex items-start flex-1">
+                        <div className="flex items-start">
                           <Checkbox
                             checked={selectedAddOns.some((item) => item.id === addOn.id)}
                             onCheckedChange={() => handleAddOnToggle(addOn)}
                             className="mt-1"
                           />
-                          <div className="ml-4 flex-1">
-                            <h4 className="font-semibold text-gray-900">{addOn.name}</h4>
+                          <div className="ml-4 flex-1 min-w-0">
+                            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                              <h4 className="font-semibold text-gray-900">{addOn.name}</h4>
+                              {addOn.isOneTime ? (
+                                <span className="font-semibold text-primary">+${addOn.price} <span className="text-sm font-normal text-gray-500">one-time</span></span>
+                              ) : addOn.perVisit ? (
+                                <span className="font-semibold text-primary">+${addOn.price}/visit <span className="text-sm font-normal text-gray-500">${addOn.price * 6} total (6 visits)</span></span>
+                              ) : (
+                                <span className="font-semibold text-primary">+${addOn.price}/month <span className="text-sm font-normal text-gray-500">${addOn.price * 6} total</span></span>
+                              )}
+                            </div>
                             <p className="text-sm text-gray-600 mt-1">{addOn.description}</p>
                           </div>
-                        </div>
-                        <div className="text-right ml-4">
-                          {addOn.isOneTime ? (
-                            <>
-                              <span className="font-semibold text-primary text-lg">+${addOn.price}</span>
-                              <p className="text-sm text-gray-500 mt-1">one-time</p>
-                            </>
-                          ) : addOn.perVisit ? (
-                            <>
-                              <span className="font-semibold text-primary text-lg">+${addOn.price}/visit</span>
-                              <p className="text-sm text-gray-500 mt-1">${addOn.price * 6} total (6 visits)</p>
-                            </>
-                          ) : (
-                            <>
-                              <span className="font-semibold text-primary text-lg">+${addOn.price}/month</span>
-                              <p className="text-sm text-gray-500 mt-1">${addOn.price * 6} total</p>
-                            </>
-                          )}
                         </div>
                       </div>
                     ))}
@@ -905,7 +688,7 @@ export default function CheckoutPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-base md:text-lg">
-                    <User className="w-5 h-5 mr-2 text-primary" />
+                    
                     Personal Information
                   </CardTitle>
                 </CardHeader>
@@ -959,143 +742,183 @@ export default function CheckoutPage() {
                           We'll use this to contact you about your service appointments.
                         </p>
                       </div>
-                      
 
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Address Entry Card */}
+              <Card>
+                <CardContent className="pt-6">
+                  
+
+                  <div className="flex gap-3" ref={suggestionRef}>
+                    <div className="relative flex-1">
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={handleGeolocation}
+                          disabled={isGeolocating}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors disabled:opacity-50"
+                          title="Use my current location"
+                        >
+                          {isGeolocating ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <LocateFixed className="h-4 w-4" />
+                          )}
+                        </button>
+                        <Input
+                          value={addressInput}
+                          onChange={(e) => setAddressInput(e.target.value)}
+                          placeholder="Enter your service address"
+                          className="pl-10"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              setShowSuggestions(false)
+                              handleAddressLookup()
+                            }
+                          }}
+                        />
+                      </div>
+                      {showSuggestions && addressSuggestions.length > 0 && (
+                        <div className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                          {addressSuggestions.map((suggestion, index) => (
+                            <button
+                              key={index}
+                              type="button"
+                              className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center gap-2 text-sm border-b last:border-b-0"
+                              onClick={() => handleSelectSuggestion(suggestion)}
+                            >
+                              <MapPin className="h-4 w-4 text-gray-400 shrink-0" />
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    
+                  </div>
+
+                  {isLookingUpAddress && (
+                    <div className="mt-4 flex items-center gap-2 text-sm text-primary">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Looking up your address...
+                    </div>
+                  )}
+
+                  {addressNotRecognized && !isLookingUpAddress && (
+                    <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                      <p className="text-sm text-amber-800">
+                        We couldn{"'"}t verify this address. Pricing shown is based on a minimum yard size and may be adjusted after an on-site assessment.
+                      </p>
+                    </div>
+                  )}
+
+                  {serviceAddress && !isLookingUpAddress && !addressNotRecognized && (
+                    <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
+                      <Check className="h-4 w-4 text-primary shrink-0" />
+                      <p className="text-sm text-gray-700">
+                        Address verified. Estimated yard size: {yardSize.toLocaleString()} sq ft. Prices have been updated.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Property Details Slider */}
+                  {serviceAddress && (
+                    <div className="mt-5 pt-5 border-t border-border">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="font-semibold text-foreground">Property Details</h4>
+                        <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">Adjust if needed</span>
+                      </div>
+                      <div className="bg-secondary/30 rounded-2xl p-6">
+                        <Slider
+                          value={[yardSize > 10000 ? 5 : yardSize <= 3000 ? 1 : yardSize <= 5000 ? 2 : yardSize <= 7000 ? 3 : 4]}
+                          onValueChange={(value) => {
+                            const sizes = [3000, 3000, 4500, 6000, 8500, 15000]
+                            const newSize = sizes[value[0]]
+                            setYardSize(newSize)
+                            if (newSize <= 10000 && selectedPackage) {
+                              const newPricing = getPackagePrice(selectedPackage.id, newSize)
+                              setSelectedPackage((prev) => ({
+                                ...prev,
+                                monthlyPrice: newPricing.monthly,
+                                packageTotal: newPricing.total,
+                              }))
+                            }
+                          }}
+                          max={5}
+                          min={1}
+                          step={1}
+                          className="w-full mb-4"
+                        />
+                        <div className="flex justify-between text-xs">
+                          {[
+                            { label: "X-Small", sublabel: "< 3,000 sq ft", value: 1 },
+                            { label: "Small", sublabel: "3-5,000 sq ft", value: 2 },
+                            { label: "Standard", sublabel: "5-7,000 sq ft", value: 3 },
+                            { label: "Large", sublabel: "7-10,000 sq ft", value: 4 },
+                            { label: "Estate", sublabel: "+10,000 sq ft", value: 5 },
+                          ].map((option) => {
+                            const currentValue = yardSize > 10000 ? 5 : yardSize <= 3000 ? 1 : yardSize <= 5000 ? 2 : yardSize <= 7000 ? 3 : 4
+                            return (
+                              <button
+                                key={option.value}
+                                type="button"
+                                onClick={() => {
+                                  const sizes = [3000, 3000, 4500, 6000, 8500, 15000]
+                                  const newSize = sizes[option.value]
+                                  setYardSize(newSize)
+                                  if (newSize <= 10000 && selectedPackage) {
+                                    const newPricing = getPackagePrice(selectedPackage.id, newSize)
+                                    setSelectedPackage((prev) => ({
+                                      ...prev,
+                                      monthlyPrice: newPricing.monthly,
+                                      packageTotal: newPricing.total,
+                                    }))
+                                  }
+                                }}
+                                className={`flex flex-col items-center gap-0.5 transition-colors ${
+                                  currentValue === option.value
+                                    ? "text-primary font-semibold"
+                                    : "text-muted-foreground hover:text-foreground"
+                                }`}
+                              >
+                                <span>{option.label}</span>
+                                <span className="text-[10px] font-normal">{option.sublabel}</span>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
               <div className="flex justify-end pt-6 pb-8">
-                <Button
-                  onClick={handleBookService}
-                  disabled={!canBookService || isLoading}
-                  size="lg"
-                  className="px-8 w-full md:w-auto"
-                >
-                  {isLoading ? "Processing..." : "Complete Booking"}
-                </Button>
+                {yardSize > 10000 ? (
+                  <a
+                    href="https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full h-12 rounded-xl font-medium bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center text-sm transition-colors"
+                  >
+                    Contact Us for a Quote
+                  </a>
+                ) : (
+                  <Button
+                    onClick={handleBookService}
+                    disabled={!canBookService || isLoading}
+                    size="lg"
+                    className="px-16 w-full"
+                  >
+                    {isLoading ? "Processing..." : "Book Service"}
+                  </Button>
+                )}
               </div>
             </div>
-          </div>
-
-          {/* Right Column - Order Summary */}
-          <div className="lg:col-span-5">
-            <div className="sticky top-8 space-y-6">
-              {/* Order Summary */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Package Header with Total */}
-                    {selectedPackage && (
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {selectedPackage.name} - ${selectedPackage.monthlyPrice.toFixed(2)}/visit
-                        </h3>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {addressUnverified ? "Estimated " : ""}6 visits = ${selectedPackage.packageTotal.toFixed(2)}{" "}
-                          package total
-                        </p>
-                      </div>
-                    )}
-
-                    <hr />
-
-                    {/* Service Details Section */}
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Service Details</h4>
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <div className="flex justify-between">
-                          <span>Address:</span>
-                          <span className="text-gray-900 text-right">{serviceAddress || "Not provided"}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {selectedAddOns.some((addon) => addon.isOneTime) && (
-                      <>
-                        <hr />
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-3">One-Time Services</h4>
-                          <div className="space-y-2">
-                            {selectedAddOns
-                              .filter((addon) => addon.isOneTime)
-                              .map((addon) => (
-                                <div key={addon.id} className="flex justify-between text-sm">
-                                  <span>{addon.name}</span>
-                                  <span>+${addon.price.toFixed(2)}</span>
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    <hr />
-
-                    {/* Payment Breakdown Section */}
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Payment Breakdown</h4>
-                      <div className="space-y-2">
-                        {selectedPackage && (
-                          <div className="flex justify-between text-sm">
-                            <span>First Installment</span>
-                            <span>${selectedPackage.monthlyPrice.toFixed(2)}</span>
-                          </div>
-                        )}
-
-                        {selectedAddOns
-                          .filter((addon) => addon.perVisit)
-                          .map((addon) => (
-                            <div key={addon.id} className="flex justify-between text-sm">
-                              <span>{addon.name} (first visit)</span>
-                              <span>+${addon.price.toFixed(2)}</span>
-                            </div>
-                          ))}
-
-                        {selectedAddOns
-                          .filter((addon) => !addon.isOneTime && !addon.perVisit)
-                          .map((addon) => (
-                            <div key={addon.id} className="flex justify-between text-sm">
-                              <span>{addon.name}</span>
-                              <span>+${addon.price.toFixed(2)}</span>
-                            </div>
-                          ))}
-
-                        <div className="flex justify-between text-sm pt-2 border-t">
-                          <span>Subtotal</span>
-                          <span>${subtotal.toFixed(2)}</span>
-                        </div>
-
-                        <div className="flex justify-between text-sm">
-                          <span>Tax (8.25%)</span>
-                          <span>${tax.toFixed(2)}</span>
-                        </div>
-
-                        <div className="flex justify-between font-semibold text-lg pt-3 border-t">
-                          <span>Total due today</span>
-                          <span className="text-primary">${total.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                      <p className="text-sm text-green-800">
-                        <>
-                          <span className="font-semibold">Note:</span> This is a preliminary estimate. Final pricing
-                          will be determined during your on-site visit and may vary based on property conditions and
-                          specific requirements.
-                        </>
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
         </div>
       </div>
     </div>

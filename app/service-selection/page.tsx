@@ -67,23 +67,23 @@ export default function ServiceSelectionPage() {
         "Seasonal adjustments & maintenance for peak performance",
       ],
       icon: "/images/icon-irrigation-army.png",
-      buttonText: "Request Service",
-      onClick: handleExternalService,
+      buttonText: "Email Us",
+      onClick: () => window.location.href = "mailto:HLC137@heroeslawncare.com?subject=Irrigation Service Request",
     },
     {
-      id: "doody",
-      name: "Doody Duty",
-      tagline: "Keep your yard clean, fresh, and family-friendly",
-      image: "/images/doody-dog.png",
+      id: "mosquito",
+      name: "Mosquito Legion",
+      tagline: "Reclaim your outdoor space from biting pests",
+      image: "/images/irrigation-sprinkler.png",
       features: [
-        "Weekly or custom cleanups to match your pets' needs",
-        "A spotless, odor-free yard every visit",
-        "Healthier outdoor spaces with harmful bacteria and parasites removed",
-        "Eco-friendly disposal that protects your lawn and the environment",
+        "Effective treatments that eliminate mosquitoes at the source",
+        "Long-lasting protection for your entire yard",
+        "Safe for family, pets, and plants",
+        "Seasonal programs to keep pests away all summer",
       ],
-      icon: "/images/icon-doody-duty.png",
-      buttonText: "Request Service",
-      onClick: handleExternalService,
+      icon: "/images/icon-mosquito-legion.png",
+      buttonText: "Email Us",
+      onClick: () => window.location.href = "mailto:HLC137@heroeslawncare.com?subject=Mosquito Control Service Request",
     },
   ]
 
@@ -105,15 +105,38 @@ export default function ServiceSelectionPage() {
               key={service.id}
               className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col"
             >
-              <div className="relative w-full h-48 overflow-hidden">
-                <Image
-                  src={service.image || "/placeholder.svg"}
-                  alt={service.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              </div>
+              {service.id === "fertilizer" ? (
+                <div className="relative w-full h-48 overflow-hidden">
+                  <Image
+                    src="/images/fertilizer-hero.png"
+                    alt={service.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-black/10" />
+                  <div className="absolute inset-0 flex">
+                    <div className="flex-1 flex items-center justify-center">
+                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg">FEED</span>
+                    </div>
+                    <div className="flex-1 flex items-center justify-center">
+                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg">WEED</span>
+                    </div>
+                    <div className="flex-1 flex items-center justify-center">
+                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg">PREP</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative w-full h-48 overflow-hidden">
+                  <Image
+                    src={service.image || "/placeholder.svg"}
+                    alt={service.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                </div>
+              )}
 
               <div className="absolute top-36 left-1/2 -translate-x-1/2 z-10">
                 <div className="relative w-20 h-20 rounded-2xl bg-white shadow-xl p-2 ring-4 ring-white">

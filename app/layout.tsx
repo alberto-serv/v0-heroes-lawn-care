@@ -2,7 +2,6 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Instrument_Sans } from "next/font/google"
 import "@/app/globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { cn } from "@/lib/utils"
@@ -16,6 +15,7 @@ export const metadata: Metadata = {
   title: "Heroes Lawn Care - Professional Lawn Care Services in The Woodlands, TX",
   description:
     "Professional lawn care and landscaping services for residential and commercial properties in The Woodlands, TX and surrounding areas.",
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
@@ -24,15 +24,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="light">
       <body className={cn("min-h-screen bg-background font-sans antialiased", instrumentSans.variable)}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </ThemeProvider>
+        <div className="relative flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   )

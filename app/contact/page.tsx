@@ -191,7 +191,7 @@ export default function ContactPage() {
                     <MapPin className="h-5 w-5 mt-0.5 text-primary" />
                     <div>
                       <p className="font-medium">Service Area</p>
-                      <p className="text-sm text-muted-foreground">The Woodlands, TX 77381</p>
+                      <p className="text-sm text-muted-foreground">The Woodlands, TX 77354</p>
                       <p className="text-sm text-muted-foreground">& Surrounding Areas</p>
                     </div>
                   </div>
@@ -199,7 +199,7 @@ export default function ContactPage() {
                     <Phone className="h-5 w-5 mt-0.5 text-primary" />
                     <div>
                       <p className="font-medium">Phone</p>
-                      <p className="text-sm text-muted-foreground">(402) 866-8934</p>
+                      <p className="text-sm text-muted-foreground">(832) 479-1454</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
