@@ -44,12 +44,6 @@ export function Footer() {
         <div className="mt-12 pt-6 border-t flex flex-col md:flex-row items-center justify-between">
           <p className="text-xs text-muted-foreground">© 2025 Heroes Lawn Care. All rights reserved.</p>
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-primary">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-xs text-muted-foreground hover:text-primary">
-              Terms of Service
-            </Link>
             <Link
               href="https://www.goserv.com/"
               target="_blank"
