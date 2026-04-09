@@ -4,7 +4,20 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { MapPin, ArrowRight, Check, LocateFixed, CornerDownLeft, HelpCircle, AlertCircle } from "lucide-react"
+import {
+  MapPin,
+  ArrowRight,
+  Check,
+  LocateFixed,
+  CornerDownLeft,
+  HelpCircle,
+  AlertCircle,
+  Bug,
+  Leaf,
+  Dog,
+  Droplets,
+  Sparkles,
+} from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 
@@ -41,7 +54,25 @@ const getPackagePrice = (packageId: string, yardSize: number) => {
   return { perVisit: 0, total: 0 }
 }
 
-type ServiceType = "fertilizer" | "irrigation" | "lawncommand" | null
+type ServiceType =
+  | "fertilizer"
+  | "irrigation"
+  | "lawncommand"
+  | "mosquito"
+  | "plantcare"
+  | "petwaste"
+  | null
+
+type MosquitoPlan = "full" | "monthly" | "bimonthly"
+
+type Service = {
+  id: Exclude<ServiceType, null>
+  name: string
+  description: string
+  blurb: string
+  icon?: string
+  Icon?: React.ComponentType<{ className?: string }>
+}
 
 const sizeOptions = [
   { value: 0, label: "I don't know", size: 0 },
@@ -67,6 +98,8 @@ export default function HomePage() {
   const [manualCity, setManualCity] = useState("")
   const [manualState, setManualState] = useState("")
   const [manualZip, setManualZip] = useState("")
+  const [mosquitoPlan, setMosquitoPlan] = useState<MosquitoPlan>("full")
+  const [numDogs, setNumDogs] = useState(1)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
   const mockAddresses = [
@@ -148,27 +181,48 @@ export default function HomePage() {
     setShowAddressField(false)
   }
 
-  const services = [
+  const services: Service[] = [
     {
-      id: "fertilizer" as ServiceType,
+      id: "fertilizer",
       name: "Lawn Care",
       description: "Lawn fertilization & weed control",
       blurb: "Keep your lawn lush and weed-free with our seasonal fertilization program. 6 visits per year to maintain a healthy, green lawn.",
       icon: "/images/icon-fertilizer-force.png",
     },
     {
-      id: "irrigation" as ServiceType,
+      id: "irrigation",
       name: "Irrigation",
-      description: "Sprinkler repairs & maintenance",
-      blurb: "From leak repairs to system inspections, we keep your sprinklers running efficiently so your lawn stays perfectly watered.",
+      description: "Repairs, maintenance & winterization",
+      blurb: "Seasonal irrigation programs covering drip line and sprinkler head repair, valve covers for up to six zones, and fall winterization to protect your system.",
       icon: "/images/icon-irrigation-army.png",
     },
     {
-      id: "lawncommand" as ServiceType,
+      id: "lawncommand",
       name: "Landscaping",
       description: "Full lawn & landscape services",
       blurb: "Comprehensive lawn and landscape care including mowing, edging, trimming, and seasonal cleanups tailored to your property.",
       icon: "/images/icon-lawn-command.png",
+    },
+    {
+      id: "mosquito",
+      name: "Mosquito Control",
+      description: "Eco-friendly seasonal protection",
+      blurb: "Reclaim your yard with our environmentally friendly mosquito control program. Full season coverage from March through October keeps your family comfortable all summer long.",
+      Icon: Bug,
+    },
+    {
+      id: "plantcare",
+      name: "Plant Healthcare",
+      description: "Trees, shrubs & ornamentals",
+      blurb: "Year-round care for your ornamental trees and shrubs. Deep root feedings, insect prevention, soil testing, and seasonal inspections from certified experts.",
+      Icon: Leaf,
+    },
+    {
+      id: "petwaste",
+      name: "Pet Waste",
+      description: "Weekly dog waste pickup",
+      blurb: "Reliable weekly pet waste pickup so your yard stays clean, sanitary, and family-friendly. Simple monthly billing with per-pet pricing.",
+      Icon: Dog,
     },
   ]
 
@@ -272,24 +326,31 @@ export default function HomePage() {
             <div className="max-w-3xl mx-auto">
               <h2 className="text-xl font-semibold text-foreground mb-6">Select your service</h2>
               <div className="flex flex-wrap justify-center gap-3 mb-6">
-                {services.map((service) => (
-                  <button
-                    key={service.id}
-                    onClick={() => setSelectedService(service.id)}
-                    className={`group flex items-center gap-3 px-5 py-3 rounded-full transition-all duration-300 ${
-                      selectedService === service.id
-                        ? "bg-primary text-primary-foreground shadow-lg"
-                        : "bg-card border border-border hover:border-primary/50 hover:shadow-md"
-                    }`}
-                  >
-                    <img 
-                      src={service.icon || "/placeholder.svg"} 
-                      alt="" 
-                      className="w-7 h-7 object-contain"
-                    />
-                    <span className="font-medium">{service.name}</span>
-                  </button>
-                ))}
+                {services.map((service) => {
+                  const LucideIcon = service.Icon
+                  return (
+                    <button
+                      key={service.id}
+                      onClick={() => setSelectedService(service.id)}
+                      className={`group flex items-center gap-3 px-5 py-3 rounded-full transition-all duration-300 ${
+                        selectedService === service.id
+                          ? "bg-primary text-primary-foreground shadow-lg"
+                          : "bg-card border border-border hover:border-primary/50 hover:shadow-md"
+                      }`}
+                    >
+                      {LucideIcon ? (
+                        <LucideIcon className="w-6 h-6" />
+                      ) : (
+                        <img
+                          src={service.icon || "/placeholder.svg"}
+                          alt=""
+                          className="w-7 h-7 object-contain"
+                        />
+                      )}
+                      <span className="font-medium">{service.name}</span>
+                    </button>
+                  )
+                })}
               </div>
               
               {/* Service Blurb */}
@@ -586,7 +647,41 @@ export default function HomePage() {
       {selectedService === "irrigation" && (
         <section className="pb-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="bg-card rounded-2xl border border-border p-6 md:p-8 shadow-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <Droplets className="w-5 h-5 text-primary" />
+                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                    Seasonal Program
+                  </span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                  Irrigation Repair &amp; Maintenance
+                </h2>
+                <p className="text-muted-foreground mb-6">
+                  Repair of drip lines, sprinkler heads, and valve covers for up to six zones, plus end-of-season winterization.
+                </p>
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 p-5 rounded-xl bg-primary/5 border border-primary/20">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                      Seasonal Price
+                    </p>
+                    <p className="text-3xl md:text-4xl font-bold text-foreground">$349</p>
+                    <p className="text-sm text-muted-foreground">for the season (up to 6 zones)</p>
+                  </div>
+                  <ul className="text-sm text-foreground space-y-1.5">
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-primary" /> Drip line &amp; sprinkler head repair
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-primary" /> Valve covers (up to 6 zones)
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-primary" /> Fall winterization
+                    </li>
+                  </ul>
+                </div>
+              </div>
               <div className="bg-card rounded-2xl shadow-xl border border-border overflow-hidden">
                 <iframe
                   src="https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search"
@@ -610,6 +705,280 @@ export default function HomePage() {
                   className="w-full h-[700px] border-0"
                   title="Landscaping Service Request"
                 />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Mosquito Control Section */}
+      {selectedService === "mosquito" && (
+        <section className="pb-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-card rounded-2xl border border-border p-6 md:p-10 shadow-xl">
+                <div className="flex items-center gap-2 mb-3">
+                  <Leaf className="w-5 h-5 text-green-600" />
+                  <span className="text-xs font-semibold text-green-700 uppercase tracking-wide">
+                    Environmentally Friendly
+                  </span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                  Seasonal Mosquito Control
+                </h2>
+                <p className="text-muted-foreground mb-6">
+                  Full season coverage from March through October using eco-friendly, family-safe treatments.
+                </p>
+
+                <div className="mb-4">
+                  <p className="text-sm font-semibold text-foreground mb-3">Choose your payment plan</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {[
+                      {
+                        id: "full" as MosquitoPlan,
+                        label: "Pay in Full",
+                        price: "$499",
+                        subtext: "one-time for the season",
+                      },
+                      {
+                        id: "monthly" as MosquitoPlan,
+                        label: "Monthly",
+                        price: "$62.38",
+                        subtext: "/mo × 8 (Mar–Oct)",
+                      },
+                      {
+                        id: "bimonthly" as MosquitoPlan,
+                        label: "Bi-Monthly",
+                        price: "$124.75",
+                        subtext: "every 2 mo × 4",
+                      },
+                    ].map((plan) => (
+                      <button
+                        key={plan.id}
+                        type="button"
+                        onClick={() => setMosquitoPlan(plan.id)}
+                        className={`text-left rounded-xl p-4 transition-all ${
+                          mosquitoPlan === plan.id
+                            ? "ring-2 ring-primary bg-primary/5"
+                            : "border border-border hover:border-primary/40"
+                        }`}
+                      >
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                          {plan.label}
+                        </p>
+                        <p className="text-2xl font-bold text-foreground">{plan.price}</p>
+                        <p className="text-xs text-muted-foreground">{plan.subtext}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Full season coverage (March–October)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Family &amp; pet-safe treatments</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Flexible installment options</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Barrier treatments around your yard</span>
+                  </li>
+                </ul>
+
+                <Button
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  onClick={() =>
+                    window.open(
+                      "https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search",
+                      "_blank",
+                    )
+                  }
+                >
+                  Request Mosquito Control
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Plant Healthcare Section */}
+      {selectedService === "plantcare" && (
+        <section className="pb-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-card rounded-2xl border border-border p-6 md:p-10 shadow-xl">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                    Annual Recurring Program
+                  </span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                  Plant Healthcare
+                </h2>
+                <p className="text-muted-foreground mb-6">
+                  A full-year care program for your ornamental trees and shrubs, delivered by certified plant health experts.
+                </p>
+
+                <div className="flex items-end justify-between p-5 rounded-xl bg-primary/5 border border-primary/20 mb-6">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                      Annual Program
+                    </p>
+                    <p className="text-4xl md:text-5xl font-bold text-foreground">$500</p>
+                    <p className="text-sm text-muted-foreground">per year, all-inclusive</p>
+                  </div>
+                  <Leaf className="w-12 h-12 text-primary/40 hidden sm:block" />
+                </div>
+
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Deep root feedings</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Insect prevention treatments</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Seasonal expert inspections</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Soil testing</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Preventative nutrient treatments</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Preventative pest treatments</span>
+                  </li>
+                </ul>
+
+                <Button
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  onClick={() =>
+                    window.open(
+                      "https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search",
+                      "_blank",
+                    )
+                  }
+                >
+                  Enroll in Plant Healthcare
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Pet Waste Section */}
+      {selectedService === "petwaste" && (
+        <section className="pb-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-card rounded-2xl border border-border p-6 md:p-10 shadow-xl">
+                <div className="flex items-center gap-2 mb-3">
+                  <Dog className="w-5 h-5 text-primary" />
+                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                    Weekly Service
+                  </span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                  Pet Waste Pickup
+                </h2>
+                <p className="text-muted-foreground mb-6">
+                  Reliable weekly pet waste pickup so your yard stays clean and family-friendly.
+                </p>
+
+                <div className="p-5 rounded-xl bg-secondary/50 mb-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <label htmlFor="numDogs" className="text-sm font-medium text-foreground">
+                      How many dogs?
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
+                        className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
+                        aria-label="Decrease dog count"
+                      >
+                        −
+                      </button>
+                      <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
+                      <button
+                        type="button"
+                        onClick={() => setNumDogs(numDogs + 1)}
+                        className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
+                        aria-label="Increase dog count"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-sm border-t border-border pt-4">
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Base fee (weekly service)</span>
+                      <span>$50.00</span>
+                    </div>
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>
+                        Per-pet fee ({numDogs} × $15)
+                      </span>
+                      <span>${(numDogs * 15).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-foreground font-bold text-lg border-t border-border pt-2">
+                      <span>Monthly total</span>
+                      <span>${(50 + numDogs * 15).toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Weekly pickup schedule</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Sanitary disposal</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Simple monthly billing</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>No long-term contracts</span>
+                  </li>
+                </ul>
+
+                <Button
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  onClick={() =>
+                    window.open(
+                      "https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search",
+                      "_blank",
+                    )
+                  }
+                >
+                  Sign Up for Pet Waste Service
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>
