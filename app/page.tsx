@@ -11,7 +11,6 @@ import {
   LocateFixed,
   CornerDownLeft,
   AlertCircle,
-  Bug,
   Leaf,
   Dog,
   Droplets,
@@ -206,7 +205,7 @@ export default function HomePage() {
       name: "Mosquito Control",
       description: "Eco-friendly seasonal protection",
       blurb: "Reclaim your yard with our environmentally friendly mosquito control program. Full season coverage from March through October keeps your family comfortable all summer long.",
-      Icon: Bug,
+      icon: "/images/icon-mosquito-legion.png",
     },
     {
       id: "plantcare",
@@ -220,7 +219,7 @@ export default function HomePage() {
       name: "Pet Waste",
       description: "Weekly dog waste pickup",
       blurb: "Reliable weekly pet waste pickup so your yard stays clean, sanitary, and family-friendly. Simple monthly billing with per-pet pricing.",
-      Icon: Dog,
+      icon: "/images/icon-doody-duty.png",
     },
     {
       id: "snow",
@@ -780,6 +779,21 @@ export default function HomePage() {
                     <span>Barrier treatments around your yard</span>
                   </li>
                 </ul>
+
+                <div className="mb-6 rounded-xl border border-border bg-secondary/40 p-4">
+                  <p className="text-sm text-foreground">
+                    Powered by{" "}
+                    <a
+                      href="https://www.in2care.org/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-primary hover:underline"
+                    >
+                      In2Care
+                    </a>
+                    , which delivers precise, targeted control of nuisance mosquitoes.
+                  </p>
+                </div>
 
                 <Button
                   className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
