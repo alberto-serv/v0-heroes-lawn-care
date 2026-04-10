@@ -248,7 +248,20 @@ export default function CheckoutPage() {
     : true
 
   const availableAddOns = useMemo(() => {
-    // For non-fertilizer service packages, show generic recurring add-ons.
+    // Mosquito package has a single Tick Control add-on.
+    if (selectedPackage && selectedPackage.id === "mosquito") {
+      return [
+        {
+          id: "tick-control",
+          name: "Tick Control",
+          price: 45,
+          perVisit: true,
+          description: "Targeted tick treatments applied alongside your mosquito service",
+        },
+      ]
+    }
+
+    // For other non-fertilizer service packages, show generic recurring add-ons.
     if (selectedPackage && !FERTILIZER_PACKAGE_IDS.has(selectedPackage.id)) {
       return [
         {

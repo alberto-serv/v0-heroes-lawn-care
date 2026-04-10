@@ -770,7 +770,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 text-sm">
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                     <span>Full season coverage (March–October)</span>
@@ -788,6 +788,10 @@ export default function HomePage() {
                     <span>Barrier treatments around your yard</span>
                   </li>
                 </ul>
+
+                <p className="text-xs text-muted-foreground mb-6">
+                  Tick control available as an add-on at checkout.
+                </p>
 
                 <div className="mb-6 rounded-xl border border-border bg-secondary/40 p-4">
                   <p className="text-sm text-foreground">
