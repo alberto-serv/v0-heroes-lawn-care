@@ -75,6 +75,10 @@ export default function ConfirmationPage() {
       addon.name !== "Bi-Weekly Mosquito Control",
   )
 
+  // Fertilizer packages are charged per visit over a 6-visit season; service
+  // packages (mosquito/plant/pet waste/snow/irrigation) are flat-rate.
+  const isFertilizerPackage = bookingData.package.startsWith("Lawn Health")
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container py-8">
@@ -94,8 +98,18 @@ export default function ConfirmationPage() {
                 </h3>
                 <p className="text-lg font-semibold text-foreground">{bookingData.package}</p>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-base font-bold text-primary">${bookingData.packagePrice}/visit</span>
-                  <span className="text-sm text-muted-foreground">${bookingData.packageTotal} total (6 visits)</span>
+                  {isFertilizerPackage ? (
+                    <>
+                      <span className="text-base font-bold text-primary">
+                        ${bookingData.packagePrice}/visit
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        ${bookingData.packageTotal} total (6 visits)
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-base font-bold text-primary">${bookingData.packagePrice}</span>
+                  )}
                 </div>
               </div>
 
@@ -119,7 +133,11 @@ export default function ConfirmationPage() {
                   </h3>
                   {regularAddOns.map((addon, index) => (
                     <p key={index} className="text-sm text-foreground">
-                      {addon.name} <span className="text-muted-foreground">- ${addon.price}/visit</span>
+                      {addon.name}{" "}
+                      <span className="text-muted-foreground">
+                        - ${addon.price}
+                        {isFertilizerPackage ? "/visit" : ""}
+                      </span>
                     </p>
                   ))}
                 </div>

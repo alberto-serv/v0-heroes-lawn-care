@@ -783,15 +783,25 @@ export default function HomePage() {
 
                 <Button
                   className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                  onClick={() =>
-                    window.open(
-                      "https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search",
-                      "_blank",
-                    )
-                  }
+                  onClick={() => {
+                    const mosquitoPrices: Record<MosquitoPlan, number> = {
+                      full: 499,
+                      monthly: 62.38,
+                      bimonthly: 124.75,
+                    }
+                    const price = mosquitoPrices[mosquitoPlan]
+                    const params = new URLSearchParams({
+                      package: "mosquito",
+                      address: addressInput || "",
+                      yardSize: yardSize.toString(),
+                      perVisitPrice: price.toString(),
+                      packageTotal: price.toString(),
+                      addressUnverified: showAddressField ? "true" : "false",
+                    })
+                    router.push(`/checkout?${params.toString()}`)
+                  }}
                 >
                   Request Mosquito Control
-                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -858,15 +868,19 @@ export default function HomePage() {
 
                 <Button
                   className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                  onClick={() =>
-                    window.open(
-                      "https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search",
-                      "_blank",
-                    )
-                  }
+                  onClick={() => {
+                    const params = new URLSearchParams({
+                      package: "plantcare",
+                      address: addressInput || "",
+                      yardSize: yardSize.toString(),
+                      perVisitPrice: "500",
+                      packageTotal: "500",
+                      addressUnverified: showAddressField ? "true" : "false",
+                    })
+                    router.push(`/checkout?${params.toString()}`)
+                  }}
                 >
                   Enroll in Plant Healthcare
-                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -958,15 +972,20 @@ export default function HomePage() {
 
                 <Button
                   className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                  onClick={() =>
-                    window.open(
-                      "https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search",
-                      "_blank",
-                    )
-                  }
+                  onClick={() => {
+                    const monthly = 50 + numDogs * 15
+                    const params = new URLSearchParams({
+                      package: "petwaste",
+                      address: addressInput || "",
+                      yardSize: yardSize.toString(),
+                      perVisitPrice: monthly.toFixed(2),
+                      packageTotal: monthly.toFixed(2),
+                      addressUnverified: showAddressField ? "true" : "false",
+                    })
+                    router.push(`/checkout?${params.toString()}`)
+                  }}
                 >
                   Sign Up for Pet Waste Service
-                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -989,21 +1008,9 @@ export default function HomePage() {
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                   Snow Services
                 </h2>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-muted-foreground mb-6">
                   Residential driveway snow clearing. Choose a seasonal package priced by driveway length, or pay per push.
                 </p>
-
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 border border-amber-200 mb-6">
-                  <MapPin className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div className="text-sm">
-                    <p className="font-medium text-amber-900">Available in select regions only</p>
-                    <p className="text-amber-800 mt-0.5">
-                      Currently offered in <span className="font-medium">Fargo</span>,{" "}
-                      <span className="font-medium">New Jersey</span>, and{" "}
-                      <span className="font-medium">Iowa</span>.
-                    </p>
-                  </div>
-                </div>
 
                 <div className="inline-flex rounded-full border border-border p-1 mb-5 bg-secondary/50">
                   <button
@@ -1121,15 +1128,26 @@ export default function HomePage() {
 
                 <Button
                   className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                  onClick={() =>
-                    window.open(
-                      "https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search",
-                      "_blank",
-                    )
-                  }
+                  onClick={() => {
+                    const seasonalPrices: Record<SnowDrivewayLength, number> = {
+                      short: 350,
+                      medium: 425,
+                      long: 500,
+                    }
+                    const price =
+                      snowPricingMode === "seasonal" ? seasonalPrices[snowDrivewayLength] : 50
+                    const params = new URLSearchParams({
+                      package: "snow",
+                      address: addressInput || "",
+                      yardSize: yardSize.toString(),
+                      perVisitPrice: price.toString(),
+                      packageTotal: price.toString(),
+                      addressUnverified: showAddressField ? "true" : "false",
+                    })
+                    router.push(`/checkout?${params.toString()}`)
+                  }}
                 >
                   Request Snow Service
-                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
