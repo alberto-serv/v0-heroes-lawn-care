@@ -74,6 +74,7 @@ type Service = {
   blurb: string
   icon?: string
   Icon?: React.ComponentType<{ className?: string }>
+  iconHasBackground?: boolean
 }
 
 const sizeOptions = [
@@ -212,7 +213,8 @@ export default function HomePage() {
       name: "Plant Healthcare",
       description: "Trees, shrubs & ornamentals",
       blurb: "Year-round care for your ornamental trees and shrubs. Deep root feedings, insect prevention, soil testing, and seasonal inspections from certified experts.",
-      Icon: Leaf,
+      icon: "/images/icon-plant.png",
+      iconHasBackground: true,
     },
     {
       id: "petwaste",
@@ -226,7 +228,8 @@ export default function HomePage() {
       name: "Snow Services",
       description: "Driveway clearing & plowing",
       blurb: "Snow removal for residential driveways. Choose a seasonal package priced by driveway length or pay per push.",
-      Icon: Snowflake,
+      icon: "/images/icon-snow.png",
+      iconHasBackground: true,
     },
   ]
 
@@ -340,6 +343,14 @@ export default function HomePage() {
                     >
                       {LucideIcon ? (
                         <LucideIcon className="w-6 h-6" />
+                      ) : service.iconHasBackground ? (
+                        <span className="flex items-center justify-center w-7 h-7 rounded-md bg-white overflow-hidden">
+                          <img
+                            src={service.icon || "/placeholder.svg"}
+                            alt=""
+                            className="w-full h-full object-contain"
+                          />
+                        </span>
                       ) : (
                         <img
                           src={service.icon || "/placeholder.svg"}
