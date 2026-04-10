@@ -191,7 +191,7 @@ export default function HomePage() {
       id: "fertilizer",
       name: "Lawn Care",
       description: "Lawn fertilization & weed control",
-      blurb: "Keep your lawn lush and weed-free with our seasonal fertilization program. 6 visits per year to maintain a healthy, green lawn.",
+      blurb: "Keep your lawn lush and weed-free with our seasonal fertilization program.",
       icon: "/images/icon-fertilizer-force.png",
     },
     {
@@ -226,7 +226,7 @@ export default function HomePage() {
       id: "snow",
       name: "Snow Services",
       description: "Driveway clearing & plowing",
-      blurb: "Snow removal for residential driveways. Choose a seasonal package priced by driveway length or pay per push. Available in select regions only: Fargo, New Jersey, and Iowa.",
+      blurb: "Snow removal for residential driveways. Choose a seasonal package priced by driveway length or pay per push.",
       Icon: Snowflake,
     },
   ]
