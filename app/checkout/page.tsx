@@ -53,6 +53,8 @@ const getPackagePrice = (packageId: string, yardSize: number) => {
   return { monthly: 0, total: 0 }
 }
 
+const FERTILIZER_PACKAGE_IDS = new Set(["basic", "plus", "complete"])
+
 export default function CheckoutPage() {
   const searchParams = useSearchParams()
   const [selectedPackage, setSelectedPackage] = useState<any>(null)
@@ -189,9 +191,90 @@ export default function CheckoutPage() {
         "Fall winterization",
       ],
     },
+    mosquito: {
+      name: "Mosquito Control",
+      subtitle:
+        "Full season mosquito control (March through October) using family and pet-safe treatments.",
+      monthlyPrice: 499,
+      packageTotal: 499,
+      features: [
+        "Full season coverage (March–October)",
+        "Family & pet-safe treatments",
+        "Flexible installment options",
+        "Barrier treatments around your yard",
+      ],
+    },
+    plantcare: {
+      name: "Plant Healthcare",
+      subtitle:
+        "Annual care program for ornamental trees and shrubs, delivered by certified plant health experts.",
+      monthlyPrice: 500,
+      packageTotal: 500,
+      features: [
+        "Deep root feedings",
+        "Insect prevention treatments",
+        "Seasonal expert inspections",
+        "Soil testing",
+      ],
+    },
+    petwaste: {
+      name: "Pet Waste Pickup",
+      subtitle: "Weekly pet waste pickup to keep your yard clean, sanitary, and family-friendly.",
+      monthlyPrice: 65,
+      packageTotal: 65,
+      features: [
+        "Weekly pickup schedule",
+        "Sanitary disposal",
+        "Simple monthly billing",
+        "No long-term contracts",
+      ],
+    },
+    snow: {
+      name: "Snow Services",
+      subtitle: "Residential driveway snow clearing, seasonal package or per-push pricing.",
+      monthlyPrice: 425,
+      packageTotal: 425,
+      features: [
+        "Driveway clearing after each snowfall",
+        "Seasonal or per-push billing",
+        "Pricing based on driveway length",
+        "Serviced by local crews",
+      ],
+    },
   }
 
+  const isFertilizerPackage = selectedPackage
+    ? FERTILIZER_PACKAGE_IDS.has(selectedPackage.id)
+    : true
+
   const availableAddOns = useMemo(() => {
+    // For non-fertilizer service packages, show generic recurring add-ons.
+    if (selectedPackage && !FERTILIZER_PACKAGE_IDS.has(selectedPackage.id)) {
+      return [
+        {
+          id: "addon-1",
+          name: "Add-on 1",
+          price: 25,
+          perVisit: true,
+          description: "Recurring add-on service",
+        },
+        {
+          id: "addon-2",
+          name: "Add-on 2",
+          price: 35,
+          perVisit: true,
+          description: "Recurring add-on service",
+        },
+        {
+          id: "addon-3",
+          name: "Add-on 3",
+          price: 50,
+          perVisit: true,
+          description: "Recurring add-on service",
+        },
+      ]
+    }
+
     const getPriceByYardSize = (prices: { 3000?: number; 5000?: number; 7000?: number; 10000?: number }) => {
       if (yardSize <= 3000) return prices[3000] ?? 0
       if (yardSize <= 5000) return prices[5000] ?? 0
@@ -222,7 +305,7 @@ export default function CheckoutPage() {
         description: "One-time service: Eliminates fire ant colonies and prevents new infestations (1 visit per year)",
       },
     ]
-  }, [yardSize])
+  }, [yardSize, selectedPackage])
 
   const hasInitialized = useRef(false)
 
@@ -335,7 +418,9 @@ export default function CheckoutPage() {
           setShowManualEntry(false)
           parseAddressComponents(address)
 
-          if (selectedPackage) {
+          // Only recompute pricing for fertilizer packages — service packages
+          // (mosquito/plantcare/petwaste/snow) are not yard-size dependent.
+          if (selectedPackage && FERTILIZER_PACKAGE_IDS.has(selectedPackage.id)) {
             const newPricing = getPackagePrice(selectedPackage.id, newSize)
             setSelectedPackage((prev: any) => ({
               ...prev,
@@ -353,7 +438,7 @@ export default function CheckoutPage() {
           setShowManualEntry(false)
           parseAddressComponents(address)
 
-          if (selectedPackage) {
+          if (selectedPackage && FERTILIZER_PACKAGE_IDS.has(selectedPackage.id)) {
             const newPricing = getPackagePrice(selectedPackage.id, 3000)
             setSelectedPackage((prev: any) => ({
               ...prev,
@@ -537,18 +622,20 @@ export default function CheckoutPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                         <h3 className="text-lg md:text-xl font-bold text-gray-900">{selectedPackage.name}</h3>
-                        {yardSize > 10000 ? (
+                        {isFertilizerPackage && yardSize > 10000 ? (
                           <span className="text-lg font-bold text-foreground">Contact Us for Pricing</span>
                         ) : (
                           <div className="flex items-baseline gap-1">
                             <span className="text-lg md:text-2xl font-bold text-primary">
                               ${selectedPackage.monthlyPrice.toFixed(2)}
                             </span>
-                            <span className="text-gray-600 text-sm">/visit</span>
+                            {isFertilizerPackage && (
+                              <span className="text-gray-600 text-sm">/visit</span>
+                            )}
                           </div>
                         )}
                       </div>
-                      {yardSize <= 10000 && (
+                      {isFertilizerPackage && yardSize <= 10000 && (
                         <p className="text-xs text-muted-foreground mt-0.5">
                           ${selectedPackage.packageTotal} total (6 visits)
                         </p>
@@ -607,6 +694,8 @@ export default function CheckoutPage() {
                                 +${addOn.price}{" "}
                                 <span className="text-sm font-normal text-gray-500">one-time</span>
                               </span>
+                            ) : !isFertilizerPackage ? (
+                              <span className="font-semibold text-primary">+${addOn.price}</span>
                             ) : addOn.perVisit ? (
                               <span className="font-semibold text-primary">
                                 +${addOn.price}/visit{" "}
@@ -773,7 +862,7 @@ export default function CheckoutPage() {
                 )}
 
                 {/* Property Details Slider */}
-                {serviceAddress && (
+                {serviceAddress && isFertilizerPackage && (
                   <div className="mt-5 pt-5 border-t border-border">
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="font-semibold text-foreground">Property Details</h4>
@@ -866,7 +955,7 @@ export default function CheckoutPage() {
             </Card>
 
             <div className="flex justify-end pt-6 pb-8">
-              {yardSize > 10000 ? (
+              {isFertilizerPackage && yardSize > 10000 ? (
                 <a
                   href="https://clienthub.getjobber.com/hubs/0ae5bac0-dfd6-45df-856d-3206cdffc7a1/public/requests/1438026/new?utm_source=Paid_Gpb_Website_Organic_Search"
                   target="_blank"
