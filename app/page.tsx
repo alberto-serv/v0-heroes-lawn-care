@@ -11,7 +11,6 @@ import {
   LocateFixed,
   CornerDownLeft,
   AlertCircle,
-  Bug,
   Leaf,
   Dog,
   Droplets,
@@ -75,6 +74,7 @@ type Service = {
   blurb: string
   icon?: string
   Icon?: React.ComponentType<{ className?: string }>
+  iconHasBackground?: boolean
 }
 
 const sizeOptions = [
@@ -191,7 +191,7 @@ export default function HomePage() {
       id: "fertilizer",
       name: "Lawn Care",
       description: "Lawn fertilization & weed control",
-      blurb: "Keep your lawn lush and weed-free with our seasonal fertilization program. 6 visits per year to maintain a healthy, green lawn.",
+      blurb: "Keep your lawn lush and weed-free with our seasonal fertilization program.",
       icon: "/images/icon-fertilizer-force.png",
     },
     {
@@ -206,28 +206,30 @@ export default function HomePage() {
       name: "Mosquito Control",
       description: "Eco-friendly seasonal protection",
       blurb: "Reclaim your yard with our environmentally friendly mosquito control program. Full season coverage from March through October keeps your family comfortable all summer long.",
-      Icon: Bug,
+      icon: "/images/icon-mosquito-legion.png",
     },
     {
       id: "plantcare",
       name: "Plant Healthcare",
       description: "Trees, shrubs & ornamentals",
       blurb: "Year-round care for your ornamental trees and shrubs. Deep root feedings, insect prevention, soil testing, and seasonal inspections from certified experts.",
-      Icon: Leaf,
+      icon: "/images/icon-plant.png",
+      iconHasBackground: true,
     },
     {
       id: "petwaste",
       name: "Pet Waste",
       description: "Weekly dog waste pickup",
       blurb: "Reliable weekly pet waste pickup so your yard stays clean, sanitary, and family-friendly. Simple monthly billing with per-pet pricing.",
-      Icon: Dog,
+      icon: "/images/icon-doody-duty.png",
     },
     {
       id: "snow",
       name: "Snow Services",
       description: "Driveway clearing & plowing",
-      blurb: "Snow removal for residential driveways. Choose a seasonal package priced by driveway length or pay per push. Available in select regions only: Fargo, New Jersey, and Iowa.",
-      Icon: Snowflake,
+      blurb: "Snow removal for residential driveways. Choose a seasonal package priced by driveway length or pay per push.",
+      icon: "/images/icon-snow.png",
+      iconHasBackground: true,
     },
   ]
 
@@ -341,6 +343,14 @@ export default function HomePage() {
                     >
                       {LucideIcon ? (
                         <LucideIcon className="w-6 h-6" />
+                      ) : service.iconHasBackground ? (
+                        <span className="flex items-center justify-center w-7 h-7 rounded-md bg-white overflow-hidden">
+                          <img
+                            src={service.icon || "/placeholder.svg"}
+                            alt=""
+                            className="w-full h-full object-contain"
+                          />
+                        </span>
                       ) : (
                         <img
                           src={service.icon || "/placeholder.svg"}
@@ -780,6 +790,21 @@ export default function HomePage() {
                     <span>Barrier treatments around your yard</span>
                   </li>
                 </ul>
+
+                <div className="mb-6 rounded-xl border border-border bg-secondary/40 p-4">
+                  <p className="text-sm text-foreground">
+                    Powered by{" "}
+                    <a
+                      href="https://www.in2care.org/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-primary hover:underline"
+                    >
+                      In2Care
+                    </a>
+                    , which delivers precise, targeted control of nuisance mosquitoes.
+                  </p>
+                </div>
 
                 <Button
                   className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
