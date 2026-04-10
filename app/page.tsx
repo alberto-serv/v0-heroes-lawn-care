@@ -951,8 +951,9 @@ export default function HomePage() {
                       <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
                       <button
                         type="button"
-                        onClick={() => setNumDogs(numDogs + 1)}
-                        className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
+                        onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
+                        disabled={numDogs >= 8}
+                        className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                         aria-label="Increase dog count"
                       >
                         +
