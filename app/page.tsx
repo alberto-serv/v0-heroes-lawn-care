@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   MapPin,
-  ArrowRight,
   Check,
   LocateFixed,
   CornerDownLeft,
@@ -702,7 +701,6 @@ export default function HomePage() {
                   }}
                 >
                   Book Irrigation Service
-                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
