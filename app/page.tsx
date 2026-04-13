@@ -860,11 +860,11 @@ export default function HomePage() {
                 <div className="flex items-end justify-between p-5 rounded-xl bg-primary/5 border border-primary/20 mb-6">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                      4 Seasonal Installments
+                      4 Seasonal Visits
                     </p>
                     <div className="flex items-baseline gap-1">
                       <p className="text-4xl md:text-5xl font-bold text-foreground">$125</p>
-                      <span className="text-muted-foreground text-lg">/installment</span>
+                      <span className="text-muted-foreground text-lg">/visit</span>
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">$500/year total · up to 12 specimens</p>
                   </div>
