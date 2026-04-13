@@ -54,6 +54,7 @@ const getPackagePrice = (packageId: string, yardSize: number) => {
 
 type ServiceType =
   | "fertilizer"
+  | "landscaping"
   | "irrigation"
   | "mosquito"
   | "plantcare"
@@ -194,6 +195,13 @@ export default function HomePage() {
       description: "Lawn fertilization & weed control",
       blurb: "Keep your lawn lush and weed-free with our seasonal fertilization program.",
       icon: "/images/icon-fertilizer-force.png",
+    },
+    {
+      id: "landscaping",
+      name: "Landscaping",
+      description: "Design, install & seasonal cleanup",
+      blurb: "From spring refreshes to full-yard transformations, our crews handle mulch, bed edging, planting, and landscape design so your property always looks its best.",
+      icon: "/images/icon-lawn-command.png",
     },
     {
       id: "irrigation",
@@ -644,6 +652,134 @@ export default function HomePage() {
                     </div>
                   )
                 })}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Landscaping Content */}
+      {selectedService === "landscaping" && (
+        <section className="py-8 md:py-10 bg-card border-y border-border">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              {/* Header */}
+              <div className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
+                  Choose your Landscaping Package
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Seasonal refreshes, planting, and full design-and-build services
+                </p>
+              </div>
+
+              {/* Pricing Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    id: "landscaping-refresh",
+                    name: "Refresh",
+                    subtitle: "Seasonal cleanup & mulch",
+                    price: 499,
+                    features: [
+                      "Mulch refresh (up to 4 yards)",
+                      "Bed edging & shaping",
+                      "Weed pull & bed cleanup",
+                      "Shrub trimming",
+                    ],
+                  },
+                  {
+                    id: "landscaping-transform",
+                    name: "Transform",
+                    subtitle: "Planting & bed redesign",
+                    price: 1999,
+                    popular: true,
+                    features: [
+                      "Everything in Refresh",
+                      "New plantings (up to 15 specimens)",
+                      "Soil amendment & prep",
+                      "Bed redesign consultation",
+                    ],
+                  },
+                  {
+                    id: "landscaping-design",
+                    name: "Design & Build",
+                    subtitle: "Full landscape installation",
+                    price: 4999,
+                    features: [
+                      "Everything in Transform",
+                      "Custom landscape design plan",
+                      "Hardscape installation (patios, walkways)",
+                      "Tree & large specimen planting",
+                    ],
+                  },
+                ].map((pkg) => (
+                  <div
+                    key={pkg.id}
+                    className={`relative bg-card rounded-2xl p-6 md:p-8 transition-all duration-300 flex flex-col ${
+                      pkg.popular
+                        ? "ring-2 ring-primary shadow-xl scale-[1.02]"
+                        : "border border-border hover:border-primary/30 hover:shadow-lg"
+                    }`}
+                  >
+                    {pkg.popular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
+                          Most Popular
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="mb-6">
+                      <h3 className="text-xl font-bold text-foreground mb-1">{pkg.name}</h3>
+                      <p className="text-muted-foreground text-sm">{pkg.subtitle}</p>
+                    </div>
+
+                    <div className="mb-6">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-sm text-muted-foreground">starting at</span>
+                      </div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-bold text-foreground">
+                          ${pkg.price.toLocaleString()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        One-time project, final price set on site
+                      </p>
+                    </div>
+
+                    <ul className="space-y-3 mb-6 flex-grow">
+                      {pkg.features.map((feature, index) => (
+                        <li key={index} className="flex items-start gap-3 text-sm">
+                          <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                          <span className="text-foreground">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Button
+                      onClick={() => {
+                        const params = new URLSearchParams({
+                          package: pkg.id,
+                          address: addressInput || "",
+                          yardSize: yardSize.toString(),
+                          perVisitPrice: pkg.price.toString(),
+                          packageTotal: pkg.price.toString(),
+                          addressUnverified: "true",
+                        })
+                        router.push(`/checkout?${params.toString()}`)
+                      }}
+                      className={`w-full h-12 rounded-xl font-medium mt-auto ${
+                        pkg.popular
+                          ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                          : "bg-foreground hover:bg-foreground/90 text-background"
+                      }`}
+                    >
+                      Get a Free Estimate
+                    </Button>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

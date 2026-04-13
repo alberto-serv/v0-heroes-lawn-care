@@ -241,7 +241,49 @@ export default function CheckoutPage() {
         "Serviced by local crews",
       ],
     },
+    "landscaping-refresh": {
+      name: "Landscaping Refresh",
+      subtitle: "Seasonal cleanup, mulch, and bed edging to refresh your property.",
+      monthlyPrice: 499,
+      packageTotal: 499,
+      features: [
+        "Mulch refresh (up to 4 yards)",
+        "Bed edging & shaping",
+        "Weed pull & bed cleanup",
+        "Shrub trimming",
+      ],
+    },
+    "landscaping-transform": {
+      name: "Landscaping Transform",
+      subtitle: "New plantings, soil prep, and bed redesign for a fresh look.",
+      monthlyPrice: 1999,
+      packageTotal: 1999,
+      features: [
+        "Mulch refresh & bed edging",
+        "New plantings (up to 15 specimens)",
+        "Soil amendment & prep",
+        "Bed redesign consultation",
+      ],
+    },
+    "landscaping-design": {
+      name: "Landscaping Design & Build",
+      subtitle: "Full landscape design with hardscape installation and planting.",
+      monthlyPrice: 4999,
+      packageTotal: 4999,
+      features: [
+        "Custom landscape design plan",
+        "Hardscape installation (patios, walkways)",
+        "Tree & large specimen planting",
+        "Full install & cleanup",
+      ],
+    },
   }
+
+  const LANDSCAPING_PACKAGE_IDS = new Set([
+    "landscaping-refresh",
+    "landscaping-transform",
+    "landscaping-design",
+  ])
 
   const isFertilizerPackage = selectedPackage
     ? FERTILIZER_PACKAGE_IDS.has(selectedPackage.id)
@@ -257,6 +299,33 @@ export default function CheckoutPage() {
           price: 45,
           perVisit: true,
           description: "Targeted tick treatments applied alongside your mosquito service",
+        },
+      ]
+    }
+
+    // Landscaping packages have their own one-time project add-ons.
+    if (selectedPackage && LANDSCAPING_PACKAGE_IDS.has(selectedPackage.id)) {
+      return [
+        {
+          id: "mulch-install",
+          name: "Additional Mulch Installation",
+          price: 199,
+          isOneTime: true,
+          description: "One-time add-on: Extra mulch coverage beyond base package (per 2 yards)",
+        },
+        {
+          id: "bed-edging",
+          name: "Extended Bed Edging",
+          price: 149,
+          isOneTime: true,
+          description: "One-time add-on: Clean, deep edging for additional bed linear footage",
+        },
+        {
+          id: "seasonal-cleanup",
+          name: "Seasonal Cleanup",
+          price: 249,
+          isOneTime: true,
+          description: "One-time add-on: Leaf removal, bed clearing, and debris haul-away",
         },
       ]
     }
