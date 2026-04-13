@@ -65,6 +65,7 @@ type MosquitoPlan = "full" | "monthly" | "bimonthly"
 
 type SnowPricingMode = "seasonal" | "perPush"
 type SnowDrivewayLength = "short" | "medium" | "long"
+type PetWasteMode = "weekly" | "onetime"
 
 type Service = {
   id: Exclude<ServiceType, null>
@@ -102,6 +103,7 @@ export default function HomePage() {
   const [manualZip, setManualZip] = useState("")
   const [mosquitoPlan, setMosquitoPlan] = useState<MosquitoPlan>("full")
   const [numDogs, setNumDogs] = useState(1)
+  const [petWasteMode, setPetWasteMode] = useState<PetWasteMode>("weekly")
   const [snowPricingMode, setSnowPricingMode] = useState<SnowPricingMode>("seasonal")
   const [snowDrivewayLength, setSnowDrivewayLength] = useState<SnowDrivewayLength>("medium")
   const suggestionsRef = useRef<HTMLDivElement>(null)
@@ -852,16 +854,19 @@ export default function HomePage() {
                   Plant Healthcare
                 </h2>
                 <p className="text-muted-foreground mb-6">
-                  A full-year care program for your ornamental trees and shrubs, delivered by certified plant health experts.
+                  A full-year care program for your ornamental trees and shrubs, delivered by certified plant health experts. Covers up to 12 specimens.
                 </p>
 
                 <div className="flex items-end justify-between p-5 rounded-xl bg-primary/5 border border-primary/20 mb-6">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                      Annual Program
+                      4 Seasonal Installments
                     </p>
-                    <p className="text-4xl md:text-5xl font-bold text-foreground">$500</p>
-                    <p className="text-sm text-muted-foreground">per year, all-inclusive</p>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-4xl md:text-5xl font-bold text-foreground">$125</p>
+                      <span className="text-muted-foreground text-lg">/installment</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">$500/year total · up to 12 specimens</p>
                   </div>
                   <Leaf className="w-12 h-12 text-primary/40 hidden sm:block" />
                 </div>
@@ -900,7 +905,7 @@ export default function HomePage() {
                       package: "plantcare",
                       address: addressInput || "",
                       yardSize: yardSize.toString(),
-                      perVisitPrice: "500",
+                      perVisitPrice: "125",
                       packageTotal: "500",
                       addressUnverified: showAddressField ? "true" : "false",
                     })
@@ -924,97 +929,204 @@ export default function HomePage() {
                 <div className="flex items-center gap-2 mb-3">
                   <Dog className="w-5 h-5 text-primary" />
                   <span className="text-xs font-semibold text-primary uppercase tracking-wide">
-                    Weekly Service
+                    Pet Waste Pickup
                   </span>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                   Pet Waste Pickup
                 </h2>
-                <p className="text-muted-foreground mb-6">
-                  Reliable weekly pet waste pickup so your yard stays clean and family-friendly.
+                <p className="text-muted-foreground mb-5">
+                  Reliable pet waste pickup so your yard stays clean and family-friendly.
                 </p>
 
-                <div className="p-5 rounded-xl bg-secondary/50 mb-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <label htmlFor="numDogs" className="text-sm font-medium text-foreground">
-                      How many dogs?
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
-                        className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
-                        aria-label="Decrease dog count"
-                      >
-                        −
-                      </button>
-                      <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
-                      <button
-                        type="button"
-                        onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
-                        disabled={numDogs >= 8}
-                        className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                        aria-label="Increase dog count"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 text-sm border-t border-border pt-4">
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Base fee (weekly service)</span>
-                      <span>$50.00</span>
-                    </div>
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>
-                        Per-pet fee ({numDogs} × $15)
-                      </span>
-                      <span>${(numDogs * 15).toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-foreground font-bold text-lg border-t border-border pt-2">
-                      <span>Monthly total</span>
-                      <span>${(50 + numDogs * 15).toFixed(2)}</span>
-                    </div>
-                  </div>
+                {/* Weekly / One-time toggle */}
+                <div className="inline-flex rounded-full border border-border p-1 mb-5 bg-secondary/50">
+                  <button
+                    type="button"
+                    onClick={() => setPetWasteMode("weekly")}
+                    className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all ${
+                      petWasteMode === "weekly"
+                        ? "bg-primary text-primary-foreground shadow"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Weekly
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPetWasteMode("onetime")}
+                    className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all ${
+                      petWasteMode === "onetime"
+                        ? "bg-primary text-primary-foreground shadow"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    One-time
+                  </button>
                 </div>
 
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Weekly pickup schedule</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Sanitary disposal</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Simple monthly billing</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>No long-term contracts</span>
-                  </li>
-                </ul>
-
-                <Button
-                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                  onClick={() => {
-                    const monthly = 50 + numDogs * 15
-                    const params = new URLSearchParams({
-                      package: "petwaste",
-                      address: addressInput || "",
-                      yardSize: yardSize.toString(),
-                      perVisitPrice: monthly.toFixed(2),
-                      packageTotal: monthly.toFixed(2),
-                      addressUnverified: showAddressField ? "true" : "false",
-                    })
-                    router.push(`/checkout?${params.toString()}`)
-                  }}
-                >
-                  Sign Up for Pet Waste Service
-                </Button>
+                {petWasteMode === "weekly" ? (
+                  <>
+                    <div className="p-5 rounded-xl bg-secondary/50 mb-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <label className="text-sm font-medium text-foreground">
+                          How many dogs?
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
+                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
+                            aria-label="Decrease dog count"
+                          >
+                            −
+                          </button>
+                          <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
+                          <button
+                            type="button"
+                            onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
+                            disabled={numDogs >= 8}
+                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                            aria-label="Increase dog count"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm border-t border-border pt-4">
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Base fee (weekly service)</span>
+                          <span>$50.00</span>
+                        </div>
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Per-pet fee ({numDogs} × $15)</span>
+                          <span>${(numDogs * 15).toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-foreground font-bold text-lg border-t border-border pt-2">
+                          <span>Monthly total</span>
+                          <span>${(50 + numDogs * 15).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-5">
+                      A one-time first-visit setup fee applies to new accounts.
+                    </p>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Weekly pickup schedule</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Sanitary disposal</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Simple monthly billing</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>No long-term contracts</span>
+                      </li>
+                    </ul>
+                    <Button
+                      className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                      onClick={() => {
+                        const monthly = 50 + numDogs * 15
+                        const params = new URLSearchParams({
+                          package: "petwaste",
+                          address: addressInput || "",
+                          yardSize: yardSize.toString(),
+                          perVisitPrice: monthly.toFixed(2),
+                          packageTotal: monthly.toFixed(2),
+                          addressUnverified: showAddressField ? "true" : "false",
+                        })
+                        router.push(`/checkout?${params.toString()}`)
+                      }}
+                    >
+                      Sign Up for Pet Waste Service
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="p-5 rounded-xl bg-secondary/50 mb-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <label className="text-sm font-medium text-foreground">
+                          How many dogs?
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
+                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
+                            aria-label="Decrease dog count"
+                          >
+                            −
+                          </button>
+                          <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
+                          <button
+                            type="button"
+                            onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
+                            disabled={numDogs >= 8}
+                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                            aria-label="Increase dog count"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm border-t border-border pt-4">
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Base fee (one-time visit)</span>
+                          <span>$75.00</span>
+                        </div>
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Per-pet fee ({numDogs} × $20)</span>
+                          <span>${(numDogs * 20).toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-foreground font-bold text-lg border-t border-border pt-2">
+                          <span>One-time total</span>
+                          <span>${(75 + numDogs * 20).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Single visit cleanup</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Sanitary disposal</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>No commitment required</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Pay once, done</span>
+                      </li>
+                    </ul>
+                    <Button
+                      className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                      onClick={() => {
+                        const oneTime = 75 + numDogs * 20
+                        const params = new URLSearchParams({
+                          package: "petwaste",
+                          address: addressInput || "",
+                          yardSize: yardSize.toString(),
+                          perVisitPrice: oneTime.toFixed(2),
+                          packageTotal: oneTime.toFixed(2),
+                          addressUnverified: showAddressField ? "true" : "false",
+                        })
+                        router.push(`/checkout?${params.toString()}`)
+                      }}
+                    >
+                      Schedule One-Time Pickup
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -1074,20 +1186,20 @@ export default function HomePage() {
                       {[
                         {
                           id: "short" as SnowDrivewayLength,
-                          label: "Short",
-                          sublabel: "1 car length",
+                          label: "Small",
+                          sublabel: "Up to 2 garage bays, 1 car length",
                           price: 350,
                         },
                         {
                           id: "medium" as SnowDrivewayLength,
                           label: "Medium",
-                          sublabel: "2–3 car lengths",
+                          sublabel: "3 garage bays, 2–3 car lengths",
                           price: 425,
                         },
                         {
                           id: "long" as SnowDrivewayLength,
-                          label: "Long / Turnaround",
-                          sublabel: "Extra-long or with turnaround",
+                          label: "Large",
+                          sublabel: "Extra long or with turnaround",
                           price: 500,
                         },
                       ].map((tier) => (

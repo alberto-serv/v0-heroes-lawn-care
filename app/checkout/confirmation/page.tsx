@@ -78,6 +78,7 @@ export default function ConfirmationPage() {
   // Fertilizer packages are charged per visit over a 6-visit season; service
   // packages (mosquito/plant/pet waste/snow/irrigation) are flat-rate.
   const isFertilizerPackage = bookingData.package.startsWith("Lawn Health")
+  const isPlantcarePackage = bookingData.package === "Plant Healthcare"
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,6 +106,15 @@ export default function ConfirmationPage() {
                       </span>
                       <span className="text-sm text-muted-foreground">
                         ${bookingData.packageTotal} total (6 visits)
+                      </span>
+                    </>
+                  ) : isPlantcarePackage ? (
+                    <>
+                      <span className="text-base font-bold text-primary">
+                        ${bookingData.packagePrice}/installment
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        ${bookingData.packageTotal} total (4 installments)
                       </span>
                     </>
                   ) : (
