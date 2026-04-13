@@ -207,7 +207,7 @@ export default function CheckoutPage() {
     plantcare: {
       name: "Plant Healthcare",
       subtitle:
-        "Annual care program for ornamental trees and shrubs (up to 12 specimens), billed in 4 seasonal installments.",
+        "Annual care program for ornamental trees and shrubs (up to 12 specimens), 4 seasonal visits.",
       monthlyPrice: 125,
       packageTotal: 500,
       features: [
@@ -646,7 +646,7 @@ export default function CheckoutPage() {
                               <span className="text-gray-600 text-sm">/visit</span>
                             )}
                             {selectedPackage.id === "plantcare" && (
-                              <span className="text-gray-600 text-sm">/installment</span>
+                              <span className="text-gray-600 text-sm">/visit</span>
                             )}
                           </div>
                         )}
@@ -658,7 +658,7 @@ export default function CheckoutPage() {
                       )}
                       {selectedPackage.id === "plantcare" && (
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          ${selectedPackage.packageTotal} total (4 installments)
+                          ${selectedPackage.packageTotal} total (4 visits)
                         </p>
                       )}
                       <p className="text-sm text-gray-600 mt-2">{selectedPackage.subtitle}</p>

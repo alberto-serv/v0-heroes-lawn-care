@@ -111,10 +111,10 @@ export default function ConfirmationPage() {
                   ) : isPlantcarePackage ? (
                     <>
                       <span className="text-base font-bold text-primary">
-                        ${bookingData.packagePrice}/installment
+                        ${bookingData.packagePrice}/visit
                       </span>
                       <span className="text-sm text-muted-foreground">
-                        ${bookingData.packageTotal} total (4 installments)
+                        ${bookingData.packageTotal} total (4 visits)
                       </span>
                     </>
                   ) : (
