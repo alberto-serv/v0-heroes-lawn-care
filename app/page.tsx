@@ -390,22 +390,24 @@ export default function HomePage() {
               )}
 
               {/* Generic Hero Image for other services */}
-              {selectedService && selectedService !== "fertilizer" && selectedService !== "landscaping" && (
-                <div className="w-full rounded-xl overflow-hidden mt-4 bg-secondary">
+              {selectedService && selectedService !== "fertilizer" && (
+                <div className="relative w-full h-40 md:h-56 rounded-xl overflow-hidden mt-4 bg-secondary">
                   <img
                     src={
                       selectedService === "irrigation"
                         ? "/images/irrigation.png"
                         : selectedService === "mosquito"
                           ? "/images/mosquito-control.png"
-                          : selectedService === "plantcare"
-                            ? "/images/plant-healthcare.png"
-                            : selectedService === "petwaste"
-                              ? "/images/pet-waste-management.png"
-                              : "/images/snow-services.png"
+                          : selectedService === "landscaping"
+                            ? "/images/landscaping.png"
+                            : selectedService === "plantcare"
+                              ? "/images/plant-healthcare.png"
+                              : selectedService === "petwaste"
+                                ? "/images/pet-waste-management.png"
+                                : "/images/snow-services.png"
                     }
                     alt={services.find((s) => s.id === selectedService)?.name ?? ""}
-                    className="w-full h-auto block"
+                    className="w-full h-full object-cover object-bottom"
                   />
                 </div>
               )}
