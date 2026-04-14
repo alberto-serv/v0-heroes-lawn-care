@@ -10,10 +10,6 @@ import {
   LocateFixed,
   CornerDownLeft,
   AlertCircle,
-  Leaf,
-  Dog,
-  Sparkles,
-  Snowflake,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
@@ -65,7 +61,6 @@ type MosquitoPlan = "full" | "monthly" | "bimonthly"
 
 type SnowPricingMode = "seasonal" | "perPush"
 type SnowDrivewayLength = "short" | "medium" | "long"
-type PetWasteMode = "weekly" | "onetime"
 
 type Service = {
   id: Exclude<ServiceType, null>
@@ -103,7 +98,6 @@ export default function HomePage() {
   const [manualZip, setManualZip] = useState("")
   const [mosquitoPlan, setMosquitoPlan] = useState<MosquitoPlan>("full")
   const [numDogs, setNumDogs] = useState(1)
-  const [petWasteMode, setPetWasteMode] = useState<PetWasteMode>("weekly")
   const [snowPricingMode, setSnowPricingMode] = useState<SnowPricingMode>("seasonal")
   const [snowDrivewayLength, setSnowDrivewayLength] = useState<SnowDrivewayLength>("medium")
   const suggestionsRef = useRef<HTMLDivElement>(null)
@@ -324,19 +318,63 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="container mx-auto px-4 py-8 md:py-10">
+        <div className="container mx-auto px-4 py-4 md:py-6">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-2">
               Every Lawn Needs a Hero
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed">
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 leading-relaxed">
               Expert Lawn & Landscape Services
             </p>
 
             {/* Service Selection */}
             <div className="max-w-3xl mx-auto">
-              <h2 className="font-semibold text-foreground mb-4 text-3xl">Select a service</h2>
-              <div className="flex flex-wrap justify-center gap-3 mb-4">
+              {/* FEED WEED PREP Hero Image - Only for Lawn Care */}
+              {selectedService === "fertilizer" && (
+                <div className="relative w-full h-28 md:h-36 rounded-xl overflow-hidden mb-4">
+                  <img
+                    src="/images/fertilizer-hero.png"
+                    alt="Lawn care services - Feed, Weed, Prep"
+                    className="w-full h-full object-cover object-bottom"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex pb-3">
+                    <div className="flex-1 flex items-end justify-center">
+                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg md:text-3xl">FEED</span>
+                    </div>
+                    <div className="flex-1 flex items-end justify-center">
+                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg md:text-3xl">WEED</span>
+                    </div>
+                    <div className="flex-1 flex items-end justify-center">
+                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg md:text-3xl">PREP</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Generic Hero Image for other services */}
+              {selectedService && selectedService !== "fertilizer" && selectedService !== "landscaping" && (
+                <div className="relative w-full h-28 md:h-36 rounded-xl overflow-hidden mb-4">
+                  <img
+                    src={
+                      selectedService === "irrigation"
+                        ? "/images/irrigation.png"
+                        : selectedService === "mosquito"
+                          ? "/images/mosquito-control.png"
+                          : selectedService === "plantcare"
+                            ? "/images/plant-healthcare.png"
+                            : selectedService === "petwaste"
+                              ? "/images/pet-waste-management.png"
+                              : "/images/snow-services.png"
+                    }
+                    alt={services.find((s) => s.id === selectedService)?.name ?? ""}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              <h2 className="font-semibold text-foreground mb-3 text-2xl md:text-3xl">Select a service</h2>
+              <div className="flex flex-wrap justify-center gap-3 mb-3">
                 {services.map((service) => {
                   const LucideIcon = service.Icon
                   return (
@@ -372,53 +410,9 @@ export default function HomePage() {
                 })}
               </div>
 
-              {/* FEED WEED PREP Hero Image - Only for Lawn Care */}
-              {selectedService === "fertilizer" && (
-                <div className="relative w-full h-40 md:h-56 rounded-xl overflow-hidden mt-6">
-                  <img
-                    src="/images/fertilizer-hero.png"
-                    alt="Lawn care services - Feed, Weed, Prep"
-                    className="w-full h-full object-cover object-bottom"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 flex pb-4">
-                    <div className="flex-1 flex items-end justify-center">
-                      <span className="text-white text-3xl font-bold tracking-wider drop-shadow-lg md:text-4xl">FEED</span>
-                    </div>
-                    <div className="flex-1 flex items-end justify-center">
-                      <span className="text-white text-3xl font-bold tracking-wider drop-shadow-lg md:text-4xl">WEED</span>
-                    </div>
-                    <div className="flex-1 flex items-end justify-center">
-                      <span className="text-white text-3xl font-bold tracking-wider drop-shadow-lg md:text-4xl">PREP</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Generic Hero Image for other services */}
-              {selectedService && selectedService !== "fertilizer" && selectedService !== "landscaping" && (
-                <div className="relative w-full h-40 md:h-56 rounded-xl overflow-hidden mt-6">
-                  <img
-                    src={
-                      selectedService === "irrigation"
-                        ? "/images/irrigation.png"
-                        : selectedService === "mosquito"
-                          ? "/images/mosquito-control.png"
-                          : selectedService === "plantcare"
-                            ? "/images/plant-healthcare.png"
-                            : selectedService === "petwaste"
-                              ? "/images/pet-waste-management.png"
-                              : "/images/snow-services.png"
-                    }
-                    alt={services.find((s) => s.id === selectedService)?.name ?? ""}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-
               {/* Service Blurb */}
               {selectedService && (
-                <p className="text-center max-w-xl mx-auto mt-4 text-lg text-foreground font-medium">
+                <p className="text-center max-w-xl mx-auto mt-2 text-base text-foreground font-medium">
                   {services.find(s => s.id === selectedService)?.blurb}
                 </p>
               )}
@@ -890,7 +884,7 @@ export default function HomePage() {
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-10">
                 <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
-                  Choose your Mosquito Control Plan
+                  Choose how you&apos;d like to pay
                 </h2>
                 <p className="text-muted-foreground text-sm">
                   Full season coverage (March–October) with eco-friendly, family-safe treatments
@@ -920,13 +914,7 @@ export default function HomePage() {
                     price: 62.38,
                     priceSuffix: "/mo",
                     totalLabel: "$499 total over 8 months (Mar–Oct)",
-                    popular: true,
-                    features: [
-                      "Full season coverage (Mar–Oct)",
-                      "Family & pet-safe treatments",
-                      "Barrier treatments around yard",
-                      "8 monthly installments",
-                    ],
+                    features: ["8 monthly installments"],
                   },
                   {
                     id: "bimonthly" as MosquitoPlan,
@@ -935,29 +923,13 @@ export default function HomePage() {
                     price: 124.75,
                     priceSuffix: "every 2 mo",
                     totalLabel: "$499 total over 4 payments",
-                    features: [
-                      "Full season coverage (Mar–Oct)",
-                      "Family & pet-safe treatments",
-                      "Barrier treatments around yard",
-                      "4 bi-monthly installments",
-                    ],
+                    features: ["4 bi-monthly installments"],
                   },
                 ].map((plan) => (
                   <div
                     key={plan.id}
-                    className={`relative bg-card rounded-2xl p-6 md:p-8 transition-all duration-300 flex flex-col ${
-                      plan.popular
-                        ? "ring-2 ring-primary shadow-xl scale-[1.02]"
-                        : "border border-border hover:border-primary/30 hover:shadow-lg"
-                    }`}
+                    className="relative bg-card rounded-2xl p-6 md:p-8 transition-all duration-300 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg"
                   >
-                    {plan.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
-                          Most Popular
-                        </span>
-                      </div>
-                    )}
 
                     <div className="mb-6">
                       <h3 className="text-xl font-bold text-foreground mb-1">{plan.name}</h3>
@@ -999,11 +971,7 @@ export default function HomePage() {
                         })
                         router.push(`/checkout?${params.toString()}`)
                       }}
-                      className={`w-full h-12 rounded-xl font-medium mt-auto ${
-                        plan.popular
-                          ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                          : "bg-foreground hover:bg-foreground/90 text-background"
-                      }`}
+                      className="w-full h-12 rounded-xl font-medium mt-auto bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
                       Get Started
                     </Button>
@@ -1034,66 +1002,71 @@ export default function HomePage() {
 
       {/* Plant Healthcare Section */}
       {selectedService === "plantcare" && (
-        <section className="pb-16">
+        <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-card rounded-2xl border border-border p-6 md:p-10 shadow-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
-                    Annual Recurring Program
-                  </span>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+            <div className="max-w-md mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
                   Plant Healthcare
                 </h2>
-                <p className="text-muted-foreground mb-6">
-                  A full-year care program for your ornamental trees and shrubs, delivered by certified plant health experts. Covers up to 12 specimens.
+                <p className="text-muted-foreground text-sm">
+                  Annual care program for ornamental trees and shrubs (up to 12 specimens)
                 </p>
+              </div>
 
-                <div className="flex items-end justify-between p-5 rounded-xl bg-primary/5 border border-primary/20 mb-6">
-                  <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                      4 Seasonal Visits
-                    </p>
-                    <div className="flex items-baseline gap-1">
-                      <p className="text-4xl md:text-5xl font-bold text-foreground">$125</p>
-                      <span className="text-muted-foreground text-lg">/visit</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">$500/year total · up to 12 specimens</p>
-                  </div>
-                  <Leaf className="w-12 h-12 text-primary/40 hidden sm:block" />
+              <div className="relative bg-card rounded-2xl p-6 md:p-8 ring-2 ring-primary shadow-xl flex flex-col">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
+                    4 Seasonal Visits
+                  </span>
                 </div>
 
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Deep root feedings</span>
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-foreground mb-1">Annual Program</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Delivered by certified plant health experts
+                  </p>
+                </div>
+
+                <div className="mb-6">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-foreground">$125</span>
+                    <span className="text-muted-foreground">/visit</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    $500/year total · up to 12 specimens
+                  </p>
+                </div>
+
+                <ul className="space-y-3 mb-6 flex-grow">
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Deep root feedings</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Insect prevention treatments</span>
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Insect prevention treatments</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Seasonal expert inspections</span>
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Seasonal expert inspections</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Soil testing</span>
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Soil testing</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Preventative nutrient treatments</span>
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Preventative nutrient treatments</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Preventative pest treatments</span>
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Preventative pest treatments</span>
                   </li>
                 </ul>
 
                 <Button
-                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
                   onClick={() => {
                     const params = new URLSearchParams({
                       package: "plantcare",
@@ -1116,211 +1089,194 @@ export default function HomePage() {
 
       {/* Pet Waste Section */}
       {selectedService === "petwaste" && (
-        <section className="pb-16">
+        <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-card rounded-2xl border border-border p-6 md:p-10 shadow-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <Dog className="w-5 h-5 text-primary" />
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
-                    Pet Waste Pickup
-                  </span>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  Pet Waste Pickup
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
+                  Choose your Pet Waste Service
                 </h2>
-                <p className="text-muted-foreground mb-5">
-                  Reliable pet waste pickup so your yard stays clean and family-friendly.
+                <p className="text-muted-foreground text-sm">
+                  Reliable, sanitary pickup so your yard stays clean and family-friendly
                 </p>
+              </div>
 
-                {/* Weekly / One-time toggle */}
-                <div className="inline-flex rounded-full border border-border p-1 mb-5 bg-secondary/50">
-                  <button
-                    type="button"
-                    onClick={() => setPetWasteMode("weekly")}
-                    className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all ${
-                      petWasteMode === "weekly"
-                        ? "bg-primary text-primary-foreground shadow"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Weekly Card */}
+                <div className="relative bg-card rounded-2xl p-6 md:p-8 transition-all duration-300 flex flex-col ring-2 ring-primary shadow-xl">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
+                      Weekly Service
+                    </span>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-foreground mb-1">Weekly Pickup</h3>
+                    <p className="text-muted-foreground text-sm">Recurring monthly billing</p>
+                  </div>
+
+                  <div className="mb-5">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-foreground">
+                        ${(50 + numDogs * 15).toFixed(2)}
+                      </span>
+                      <span className="text-muted-foreground">/mo</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      $50 base + ${numDogs * 15} for {numDogs} dog{numDogs === 1 ? "" : "s"}
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-secondary/50 mb-5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium text-foreground">How many dogs?</label>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
+                          className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
+                          aria-label="Decrease dog count"
+                        >
+                          −
+                        </button>
+                        <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
+                        <button
+                          type="button"
+                          onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
+                          disabled={numDogs >= 8}
+                          className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                          aria-label="Increase dog count"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-3 mb-4 flex-grow">
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Weekly pickup schedule</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Sanitary disposal</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Simple monthly billing</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">No long-term contracts</span>
+                    </li>
+                  </ul>
+
+                  <p className="text-xs text-muted-foreground mb-4">
+                    A one-time first-visit setup fee applies to new accounts.
+                  </p>
+
+                  <Button
+                    className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
+                    onClick={() => {
+                      const monthly = 50 + numDogs * 15
+                      const params = new URLSearchParams({
+                        package: "petwaste",
+                        address: addressInput || "",
+                        yardSize: yardSize.toString(),
+                        perVisitPrice: monthly.toFixed(2),
+                        packageTotal: monthly.toFixed(2),
+                        addressUnverified: showAddressField ? "true" : "false",
+                      })
+                      router.push(`/checkout?${params.toString()}`)
+                    }}
                   >
-                    Weekly
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPetWasteMode("onetime")}
-                    className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all ${
-                      petWasteMode === "onetime"
-                        ? "bg-primary text-primary-foreground shadow"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    One-time
-                  </button>
+                    Sign Up for Weekly Service
+                  </Button>
                 </div>
 
-                {petWasteMode === "weekly" ? (
-                  <>
-                    <div className="p-5 rounded-xl bg-secondary/50 mb-5">
-                      <div className="flex items-center justify-between mb-4">
-                        <label className="text-sm font-medium text-foreground">
-                          How many dogs?
-                        </label>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
-                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
-                            aria-label="Decrease dog count"
-                          >
-                            −
-                          </button>
-                          <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
-                          <button
-                            type="button"
-                            onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
-                            disabled={numDogs >= 8}
-                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                            aria-label="Increase dog count"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                      <div className="space-y-2 text-sm border-t border-border pt-4">
-                        <div className="flex justify-between text-muted-foreground">
-                          <span>Base fee (weekly service)</span>
-                          <span>$50.00</span>
-                        </div>
-                        <div className="flex justify-between text-muted-foreground">
-                          <span>Per-pet fee ({numDogs} × $15)</span>
-                          <span>${(numDogs * 15).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-foreground font-bold text-lg border-t border-border pt-2">
-                          <span>Monthly total</span>
-                          <span>${(50 + numDogs * 15).toFixed(2)}</span>
-                        </div>
-                      </div>
+                {/* One-time Card */}
+                <div className="relative bg-card rounded-2xl p-6 md:p-8 transition-all duration-300 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg">
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-foreground mb-1">One-Time Pickup</h3>
+                    <p className="text-muted-foreground text-sm">Single cleanup, no commitment</p>
+                  </div>
+
+                  <div className="mb-5">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-foreground">
+                        ${(75 + numDogs * 20).toFixed(2)}
+                      </span>
+                      <span className="text-muted-foreground">one-time</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-5">
-                      A one-time first-visit setup fee applies to new accounts.
+                    <p className="text-sm text-muted-foreground mt-1">
+                      $75 base + ${numDogs * 20} for {numDogs} dog{numDogs === 1 ? "" : "s"}
                     </p>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
-                      <li className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Weekly pickup schedule</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Sanitary disposal</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Simple monthly billing</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>No long-term contracts</span>
-                      </li>
-                    </ul>
-                    <Button
-                      className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                      onClick={() => {
-                        const monthly = 50 + numDogs * 15
-                        const params = new URLSearchParams({
-                          package: "petwaste",
-                          address: addressInput || "",
-                          yardSize: yardSize.toString(),
-                          perVisitPrice: monthly.toFixed(2),
-                          packageTotal: monthly.toFixed(2),
-                          addressUnverified: showAddressField ? "true" : "false",
-                        })
-                        router.push(`/checkout?${params.toString()}`)
-                      }}
-                    >
-                      Sign Up for Pet Waste Service
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <div className="p-5 rounded-xl bg-secondary/50 mb-5">
-                      <div className="flex items-center justify-between mb-4">
-                        <label className="text-sm font-medium text-foreground">
-                          How many dogs?
-                        </label>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
-                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
-                            aria-label="Decrease dog count"
-                          >
-                            −
-                          </button>
-                          <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
-                          <button
-                            type="button"
-                            onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
-                            disabled={numDogs >= 8}
-                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                            aria-label="Increase dog count"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                      <div className="space-y-2 text-sm border-t border-border pt-4">
-                        <div className="flex justify-between text-muted-foreground">
-                          <span>Base fee (one-time visit)</span>
-                          <span>$75.00</span>
-                        </div>
-                        <div className="flex justify-between text-muted-foreground">
-                          <span>Per-pet fee ({numDogs} × $20)</span>
-                          <span>${(numDogs * 20).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-foreground font-bold text-lg border-t border-border pt-2">
-                          <span>One-time total</span>
-                          <span>${(75 + numDogs * 20).toFixed(2)}</span>
-                        </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-secondary/50 mb-5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium text-foreground">How many dogs?</label>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
+                          className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
+                          aria-label="Decrease dog count"
+                        >
+                          −
+                        </button>
+                        <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
+                        <button
+                          type="button"
+                          onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
+                          disabled={numDogs >= 8}
+                          className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                          aria-label="Increase dog count"
+                        >
+                          +
+                        </button>
                       </div>
                     </div>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
-                      <li className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Single visit cleanup</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Sanitary disposal</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>No commitment required</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Pay once, done</span>
-                      </li>
-                    </ul>
-                    <Button
-                      className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                      onClick={() => {
-                        const oneTime = 75 + numDogs * 20
-                        const params = new URLSearchParams({
-                          package: "petwaste",
-                          address: addressInput || "",
-                          yardSize: yardSize.toString(),
-                          perVisitPrice: oneTime.toFixed(2),
-                          packageTotal: oneTime.toFixed(2),
-                          addressUnverified: showAddressField ? "true" : "false",
-                        })
-                        router.push(`/checkout?${params.toString()}`)
-                      }}
-                    >
-                      Schedule One-Time Pickup
-                    </Button>
-                  </>
-                )}
+                  </div>
+
+                  <ul className="space-y-3 mb-4 flex-grow">
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Single visit cleanup</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Sanitary disposal</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">No commitment required</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Pay once, done</span>
+                    </li>
+                  </ul>
+
+                  <Button
+                    className="w-full h-12 rounded-xl bg-foreground hover:bg-foreground/90 text-background font-medium mt-auto"
+                    onClick={() => {
+                      const oneTime = 75 + numDogs * 20
+                      const params = new URLSearchParams({
+                        package: "petwaste",
+                        address: addressInput || "",
+                        yardSize: yardSize.toString(),
+                        perVisitPrice: oneTime.toFixed(2),
+                        packageTotal: oneTime.toFixed(2),
+                        addressUnverified: showAddressField ? "true" : "false",
+                      })
+                      router.push(`/checkout?${params.toString()}`)
+                    }}
+                  >
+                    Schedule One-Time Pickup
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -1329,160 +1285,109 @@ export default function HomePage() {
 
       {/* Snow Services Section */}
       {selectedService === "snow" && (
-        <section className="pb-16">
+        <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-card rounded-2xl border border-border p-6 md:p-10 shadow-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <Snowflake className="w-5 h-5 text-primary" />
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
-                    Seasonal Service
-                  </span>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  Snow Services
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
+                  Choose your Snow Service
                 </h2>
-                <p className="text-muted-foreground mb-6">
-                  Residential driveway snow clearing. Choose a seasonal package priced by driveway length, or pay per push.
+                <p className="text-muted-foreground text-sm">
+                  Seasonal packages by driveway length, or pay per push
                 </p>
+              </div>
 
-                <div className="inline-flex rounded-full border border-border p-1 mb-5 bg-secondary/50">
-                  <button
-                    type="button"
-                    onClick={() => setSnowPricingMode("seasonal")}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      snowPricingMode === "seasonal"
-                        ? "bg-primary text-primary-foreground shadow"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  {
+                    id: "small",
+                    name: "Small",
+                    subtitle: "Up to 2 garage bays, 1 car length",
+                    price: 350,
+                    priceSuffix: "/season",
+                    totalLabel: "One-time seasonal payment",
+                    snowKey: "short" as SnowDrivewayLength | "perPush",
+                  },
+                  {
+                    id: "medium",
+                    name: "Medium",
+                    subtitle: "3 garage bays, 2–3 car lengths",
+                    price: 425,
+                    priceSuffix: "/season",
+                    totalLabel: "One-time seasonal payment",
+                    snowKey: "medium" as SnowDrivewayLength | "perPush",
+                  },
+                  {
+                    id: "large",
+                    name: "Large",
+                    subtitle: "Extra long or with turnaround",
+                    price: 500,
+                    priceSuffix: "/season",
+                    totalLabel: "One-time seasonal payment",
+                    snowKey: "long" as SnowDrivewayLength | "perPush",
+                  },
+                  {
+                    id: "perpush",
+                    name: "Per Push",
+                    subtitle: "Pay as it snows — no season commitment",
+                    price: 50,
+                    priceSuffix: "/push",
+                    totalLabel: "Billed after each clearing",
+                    snowKey: "perPush" as SnowDrivewayLength | "perPush",
+                  },
+                ].map((tier) => (
+                  <div
+                    key={tier.id}
+                    className="relative bg-card rounded-2xl p-6 transition-all duration-300 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg"
                   >
-                    Seasonal package
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSnowPricingMode("perPush")}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      snowPricingMode === "perPush"
-                        ? "bg-primary text-primary-foreground shadow"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    Per push
-                  </button>
-                </div>
-
-                {snowPricingMode === "seasonal" ? (
-                  <div className="mb-6">
-                    <p className="text-sm font-semibold text-foreground mb-3">
-                      Select your driveway length
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {[
-                        {
-                          id: "short" as SnowDrivewayLength,
-                          label: "Small",
-                          sublabel: "Up to 2 garage bays, 1 car length",
-                          price: 350,
-                        },
-                        {
-                          id: "medium" as SnowDrivewayLength,
-                          label: "Medium",
-                          sublabel: "3 garage bays, 2–3 car lengths",
-                          price: 425,
-                        },
-                        {
-                          id: "long" as SnowDrivewayLength,
-                          label: "Large",
-                          sublabel: "Extra long or with turnaround",
-                          price: 500,
-                        },
-                      ].map((tier) => (
-                        <button
-                          key={tier.id}
-                          type="button"
-                          onClick={() => setSnowDrivewayLength(tier.id)}
-                          className={`text-left rounded-xl p-4 transition-all ${
-                            snowDrivewayLength === tier.id
-                              ? "ring-2 ring-primary bg-primary/5"
-                              : "border border-border hover:border-primary/40"
-                          }`}
-                        >
-                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                            {tier.label}
-                          </p>
-                          <p className="text-2xl font-bold text-foreground">
-                            ${tier.price}
-                          </p>
-                          <p className="text-xs text-muted-foreground">{tier.sublabel}</p>
-                        </button>
-                      ))}
+                    <div className="mb-5">
+                      <h3 className="text-xl font-bold text-foreground mb-1">{tier.name}</h3>
+                      <p className="text-muted-foreground text-sm">{tier.subtitle}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-3">
-                      Seasonal pricing ranges from $350 to $500 depending on driveway length.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="mb-6">
-                    <div className="flex items-end justify-between p-5 rounded-xl bg-primary/5 border border-primary/20">
-                      <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                          Pay per push
-                        </p>
-                        <div className="flex items-baseline gap-1">
-                          <p className="text-4xl md:text-5xl font-bold text-foreground">$50</p>
-                          <span className="text-muted-foreground">/ push</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Billed each time we clear your driveway.
-                        </p>
+
+                    <div className="mb-5">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-bold text-foreground">${tier.price}</span>
+                        <span className="text-muted-foreground text-sm">{tier.priceSuffix}</span>
                       </div>
-                      <Snowflake className="w-12 h-12 text-primary/40 hidden sm:block" />
+                      <p className="text-sm text-muted-foreground mt-1">{tier.totalLabel}</p>
                     </div>
+
+                    <ul className="space-y-3 mb-6 flex-grow">
+                      <li className="flex items-start gap-3 text-sm">
+                        <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-foreground">Driveway clearing after each snowfall</span>
+                      </li>
+                      <li className="flex items-start gap-3 text-sm">
+                        <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-foreground">Serviced by local crews</span>
+                      </li>
+                    </ul>
+
+                    <Button
+                      onClick={() => {
+                        if (tier.snowKey === "perPush") {
+                          setSnowPricingMode("perPush")
+                        } else {
+                          setSnowPricingMode("seasonal")
+                          setSnowDrivewayLength(tier.snowKey as SnowDrivewayLength)
+                        }
+                        const params = new URLSearchParams({
+                          package: "snow",
+                          address: addressInput || "",
+                          yardSize: yardSize.toString(),
+                          perVisitPrice: tier.price.toString(),
+                          packageTotal: tier.price.toString(),
+                          addressUnverified: showAddressField ? "true" : "false",
+                        })
+                        router.push(`/checkout?${params.toString()}`)
+                      }}
+                      className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
+                    >
+                      Select
+                    </Button>
                   </div>
-                )}
-
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6 text-sm">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Driveway clearing after each snowfall</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Seasonal or per-push billing</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Pricing based on driveway length</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Serviced by local crews</span>
-                  </li>
-                </ul>
-
-                <Button
-                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                  onClick={() => {
-                    const seasonalPrices: Record<SnowDrivewayLength, number> = {
-                      short: 350,
-                      medium: 425,
-                      long: 500,
-                    }
-                    const price =
-                      snowPricingMode === "seasonal" ? seasonalPrices[snowDrivewayLength] : 50
-                    const params = new URLSearchParams({
-                      package: "snow",
-                      address: addressInput || "",
-                      yardSize: yardSize.toString(),
-                      perVisitPrice: price.toString(),
-                      packageTotal: price.toString(),
-                      addressUnverified: showAddressField ? "true" : "false",
-                    })
-                    router.push(`/checkout?${params.toString()}`)
-                  }}
-                >
-                  Request Snow Service
-                </Button>
+                ))}
               </div>
             </div>
           </div>
