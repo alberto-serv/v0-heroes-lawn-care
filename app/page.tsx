@@ -57,7 +57,7 @@ type ServiceType =
   | "snow"
   | null
 
-type MosquitoPlan = "full" | "monthly" | "bimonthly"
+type MosquitoSize = "small" | "medium" | "large"
 
 type SnowPricingMode = "seasonal" | "perPush"
 type SnowDrivewayLength = "short" | "medium" | "long"
@@ -96,7 +96,7 @@ export default function HomePage() {
   const [manualCity, setManualCity] = useState("")
   const [manualState, setManualState] = useState("")
   const [manualZip, setManualZip] = useState("")
-  const [mosquitoPlan, setMosquitoPlan] = useState<MosquitoPlan>("full")
+  const [mosquitoSize, setMosquitoSize] = useState<MosquitoSize>("small")
   const [numDogs, setNumDogs] = useState(1)
   const [snowPricingMode, setSnowPricingMode] = useState<SnowPricingMode>("seasonal")
   const [snowDrivewayLength, setSnowDrivewayLength] = useState<SnowDrivewayLength>("medium")
@@ -894,56 +894,34 @@ export default function HomePage() {
               </div>
 
               {(() => {
-                const planOptions: {
-                  id: MosquitoPlan
+                const sizeOptions: {
+                  id: MosquitoSize
                   name: string
                   subtitle: string
-                  price: number
-                  priceSuffix: string
-                  totalLabel: string
+                  perVisit: number
                 }[] = [
-                  {
-                    id: "full",
-                    name: "Pay in Full",
-                    subtitle: "Best value — one payment for the full season",
-                    price: 499,
-                    priceSuffix: "for the season",
-                    totalLabel: "One-time payment",
-                  },
-                  {
-                    id: "monthly",
-                    name: "Monthly",
-                    subtitle: "Spread across 8 monthly installments (Mar–Oct)",
-                    price: 62.38,
-                    priceSuffix: "/mo",
-                    totalLabel: "$499 total over 8 months (Mar–Oct)",
-                  },
-                  {
-                    id: "bimonthly",
-                    name: "Bi-Monthly",
-                    subtitle: "4 payments, billed every other month",
-                    price: 124.75,
-                    priceSuffix: "every 2 mo",
-                    totalLabel: "$499 total over 4 payments",
-                  },
+                  { id: "small", name: "Small", subtitle: "3–5,000 sq ft", perVisit: 63 },
+                  { id: "medium", name: "Medium", subtitle: "5–7,000 sq ft", perVisit: 73 },
+                  { id: "large", name: "Large", subtitle: "7–10,000 sq ft", perVisit: 81 },
                 ]
-                const selectedPlan =
-                  planOptions.find((p) => p.id === mosquitoPlan) ?? planOptions[0]
+                const selectedSize =
+                  sizeOptions.find((s) => s.id === mosquitoSize) ?? sizeOptions[0]
+                const seasonTotal = selectedSize.perVisit * 8
 
                 return (
                   <>
                     <div className="max-w-3xl mx-auto mb-8">
                       <p className="text-sm font-medium text-foreground mb-3 text-center">
-                        Select a payment option
+                        Select your yard size
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {planOptions.map((opt) => {
-                          const isSelected = opt.id === selectedPlan.id
+                        {sizeOptions.map((opt) => {
+                          const isSelected = opt.id === selectedSize.id
                           return (
                             <button
                               key={opt.id}
                               type="button"
-                              onClick={() => setMosquitoPlan(opt.id)}
+                              onClick={() => setMosquitoSize(opt.id)}
                               className={`text-left p-4 rounded-xl border transition-all ${
                                 isSelected
                                   ? "border-primary bg-primary/5 ring-2 ring-primary/30"
@@ -964,21 +942,24 @@ export default function HomePage() {
                     <div className="max-w-md mx-auto">
                       <div className="relative bg-card rounded-2xl p-6 md:p-8 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
                         <div className="mb-6">
-                          <h3 className="text-xl font-bold text-foreground mb-1">{selectedPlan.name}</h3>
-                          <p className="text-muted-foreground text-sm">{selectedPlan.subtitle}</p>
+                          <h3 className="text-xl font-bold text-foreground mb-1">
+                            {selectedSize.name} Yard
+                          </h3>
+                          <p className="text-muted-foreground text-sm">
+                            Full season coverage for {selectedSize.subtitle}
+                          </p>
                         </div>
 
                         <div className="mb-6">
                           <div className="flex items-baseline gap-1">
                             <span className="text-4xl font-bold text-foreground">
-                              ${selectedPlan.price.toLocaleString(undefined, {
-                                minimumFractionDigits: selectedPlan.price % 1 === 0 ? 0 : 2,
-                                maximumFractionDigits: 2,
-                              })}
+                              ${selectedSize.perVisit}
                             </span>
-                            <span className="text-muted-foreground">{selectedPlan.priceSuffix}</span>
+                            <span className="text-muted-foreground">/visit</span>
                           </div>
-                          <p className="text-sm text-muted-foreground mt-1">{selectedPlan.totalLabel}</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            ${seasonTotal} total over 8 visits (Mar–Oct)
+                          </p>
                         </div>
 
                         <ul className="space-y-3 mb-6 flex-grow">
@@ -1002,8 +983,8 @@ export default function HomePage() {
                               package: "mosquito",
                               address: addressInput || "",
                               yardSize: yardSize.toString(),
-                              perVisitPrice: selectedPlan.price.toString(),
-                              packageTotal: "499",
+                              perVisitPrice: selectedSize.perVisit.toString(),
+                              packageTotal: seasonTotal.toString(),
                               addressUnverified: showAddressField ? "true" : "false",
                             })
                             router.push(`/checkout?${params.toString()}`)
