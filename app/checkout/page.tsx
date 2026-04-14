@@ -9,8 +9,27 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
+import { Textarea } from "@/components/ui/textarea"
 
 import { ArrowLeft, Calendar, Check, MapPin, Loader2, LocateFixed, ChevronDown, ChevronUp } from "lucide-react"
+
+function addBusinessDays(date: Date, days: number) {
+  const result = new Date(date)
+  let added = 0
+  while (added < days) {
+    result.setDate(result.getDate() + 1)
+    const day = result.getDay()
+    if (day !== 0 && day !== 6) added++
+  }
+  return result
+}
+
+function formatDateForInput(date: Date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, "0")
+  const d = String(date.getDate()).padStart(2, "0")
+  return `${y}-${m}-${d}`
+}
 
 const getPackagePrice = (packageId: string, yardSize: number) => {
   const pricingTable: Record<
@@ -81,6 +100,10 @@ export default function CheckoutPage() {
   const [showManualEntry, setShowManualEntry] = useState(false)
   const [showFeatures, setShowFeatures] = useState(false)
   const [addressNotRecognized, setAddressNotRecognized] = useState(false)
+
+  const minStartDate = useMemo(() => formatDateForInput(addBusinessDays(new Date(), 3)), [])
+  const [preferredStartDate, setPreferredStartDate] = useState(minStartDate)
+  const [scheduleComments, setScheduleComments] = useState("")
 
   // Helper function to parse address components
   const parseAddressComponents = useCallback((address: string) => {
@@ -191,6 +214,19 @@ export default function CheckoutPage() {
         "Fall winterization",
       ],
     },
+    "irrigation-service-call": {
+      name: "Irrigation Service Call",
+      subtitle:
+        "Includes inspection of the system with minor adjustments, and a quote for repairs and improvements. Larger lawns may have a higher evaluation fee. Repairs will have an additional cost.",
+      monthlyPrice: 200,
+      packageTotal: 200,
+      features: [
+        "Full system inspection",
+        "Minor adjustments included",
+        "Quote for repairs & improvements",
+        "Repairs billed separately",
+      ],
+    },
     mosquito: {
       name: "Mosquito Control",
       subtitle:
@@ -207,7 +243,7 @@ export default function CheckoutPage() {
     plantcare: {
       name: "Plant Healthcare",
       subtitle:
-        "Annual care program for ornamental trees and shrubs (up to 12 specimens), 4 seasonal visits.",
+        "Annual care program for ornamental trees and shrubs (up to 12 plants), 4 seasonal visits.",
       monthlyPrice: 125,
       packageTotal: 500,
       features: [
@@ -765,15 +801,37 @@ export default function CheckoutPage() {
                 <CardTitle className="flex items-center text-base md:text-lg">Your Schedule</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-start gap-3 bg-green-50 p-4 md:p-6 rounded-lg">
-                  <Calendar className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 bg-green-50 p-4 rounded-lg">
+                    <Calendar className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                    <p className="text-sm text-gray-700">
+                      The earliest available start date is 3 business days from today. Pick any
+                      later date that works for you.
+                    </p>
+                  </div>
+
                   <div>
-                    <p className="text-sm md:text-base font-semibold text-gray-900">
-                      Service starts in 3 business days
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      We&apos;ll reach out to confirm your first appointment and schedule ongoing visits.
-                    </p>
+                    <Label htmlFor="preferredStartDate">Preferred start date</Label>
+                    <Input
+                      id="preferredStartDate"
+                      type="date"
+                      value={preferredStartDate}
+                      min={minStartDate}
+                      onChange={(e) => setPreferredStartDate(e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="scheduleComments">Scheduling notes (optional)</Label>
+                    <Textarea
+                      id="scheduleComments"
+                      value={scheduleComments}
+                      onChange={(e) => setScheduleComments(e.target.value)}
+                      placeholder="e.g. free in the afternoon, gate code 1234, please call before arrival"
+                      rows={3}
+                      className="mt-1"
+                    />
                   </div>
                 </div>
               </CardContent>

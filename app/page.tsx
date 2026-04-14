@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
+import { ServiceRequestForm } from "@/components/service-request-form"
 
 const getPackagePrice = (packageId: string, yardSize: number) => {
   const pricingTable: Record<string, Record<string, { perVisit: number; total: number }>> = {
@@ -57,7 +58,7 @@ type ServiceType =
   | "snow"
   | null
 
-type MosquitoPlan = "full" | "monthly" | "bimonthly"
+type MosquitoSize = "small" | "medium" | "large"
 
 type SnowPricingMode = "seasonal" | "perPush"
 type SnowDrivewayLength = "short" | "medium" | "long"
@@ -96,7 +97,7 @@ export default function HomePage() {
   const [manualCity, setManualCity] = useState("")
   const [manualState, setManualState] = useState("")
   const [manualZip, setManualZip] = useState("")
-  const [mosquitoPlan, setMosquitoPlan] = useState<MosquitoPlan>("full")
+  const [mosquitoSize, setMosquitoSize] = useState<MosquitoSize>("small")
   const [numDogs, setNumDogs] = useState(1)
   const [snowPricingMode, setSnowPricingMode] = useState<SnowPricingMode>("seasonal")
   const [snowDrivewayLength, setSnowDrivewayLength] = useState<SnowDrivewayLength>("medium")
@@ -678,125 +679,12 @@ export default function HomePage() {
       {selectedService === "landscaping" && (
         <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
-              {/* Header */}
-              <div className="text-center mb-10">
-                <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
-                  Choose your Landscaping Package
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  Seasonal refreshes, planting, and full design-and-build services
-                </p>
-              </div>
-
-              {/* Pricing Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  {
-                    id: "landscaping-refresh",
-                    name: "Refresh",
-                    subtitle: "Seasonal cleanup & mulch",
-                    price: 499,
-                    features: [
-                      "Mulch refresh (up to 4 yards)",
-                      "Bed edging & shaping",
-                      "Weed pull & bed cleanup",
-                      "Shrub trimming",
-                    ],
-                  },
-                  {
-                    id: "landscaping-transform",
-                    name: "Transform",
-                    subtitle: "Planting & bed redesign",
-                    price: 1999,
-                    popular: true,
-                    features: [
-                      "Everything in Refresh",
-                      "New plantings (up to 15 specimens)",
-                      "Soil amendment & prep",
-                      "Bed redesign consultation",
-                    ],
-                  },
-                  {
-                    id: "landscaping-design",
-                    name: "Design & Build",
-                    subtitle: "Full landscape installation",
-                    price: 4999,
-                    features: [
-                      "Everything in Transform",
-                      "Custom landscape design plan",
-                      "Hardscape installation (patios, walkways)",
-                      "Tree & large specimen planting",
-                    ],
-                  },
-                ].map((pkg) => (
-                  <div
-                    key={pkg.id}
-                    className={`relative bg-card rounded-2xl p-6 md:p-8 transition-all duration-300 flex flex-col ${
-                      pkg.popular
-                        ? "ring-2 ring-primary shadow-xl scale-[1.02]"
-                        : "border border-border hover:border-primary/30 hover:shadow-lg"
-                    }`}
-                  >
-                    {pkg.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
-                          Most Popular
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="mb-6">
-                      <h3 className="text-xl font-bold text-foreground mb-1">{pkg.name}</h3>
-                      <p className="text-muted-foreground text-sm">{pkg.subtitle}</p>
-                    </div>
-
-                    <div className="mb-6">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-sm text-muted-foreground">starting at</span>
-                      </div>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-bold text-foreground">
-                          ${pkg.price.toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        One-time project, final price set on site
-                      </p>
-                    </div>
-
-                    <ul className="space-y-3 mb-6 flex-grow">
-                      {pkg.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-3 text-sm">
-                          <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                          <span className="text-foreground">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Button
-                      onClick={() => {
-                        const params = new URLSearchParams({
-                          package: pkg.id,
-                          address: addressInput || "",
-                          yardSize: yardSize.toString(),
-                          perVisitPrice: pkg.price.toString(),
-                          packageTotal: pkg.price.toString(),
-                          addressUnverified: "true",
-                        })
-                        router.push(`/checkout?${params.toString()}`)
-                      }}
-                      className={`w-full h-12 rounded-xl font-medium mt-auto ${
-                        pkg.popular
-                          ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                          : "bg-foreground hover:bg-foreground/90 text-background"
-                      }`}
-                    >
-                      Get a Free Estimate
-                    </Button>
-                  </div>
-                ))}
-              </div>
+            <div className="max-w-xl mx-auto">
+              <ServiceRequestForm
+                serviceName="Landscaping"
+                serviceIcon="/images/icon-lawn-command.png"
+                emailAddress="HLC137@heroeslawncare.com"
+              />
             </div>
           </div>
         </section>
@@ -806,7 +694,7 @@ export default function HomePage() {
       {selectedService === "irrigation" && (
         <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="max-w-md mx-auto">
+            <div className="max-w-3xl mx-auto">
               <div className="text-center mb-10">
                 <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
                   Irrigation Repair &amp; Maintenance
@@ -816,63 +704,122 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="relative bg-card rounded-2xl p-6 md:p-8 ring-2 ring-primary shadow-xl flex flex-col">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
-                    Seasonal Program
-                  </span>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-foreground mb-1">
-                    Seasonal Irrigation
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Full-season coverage for up to 6 zones
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-foreground">$349</span>
-                    <span className="text-muted-foreground">/season</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="relative bg-card rounded-2xl p-6 md:p-8 ring-2 ring-primary shadow-xl flex flex-col">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
+                      Seasonal Program
+                    </span>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    One flat rate for the full season
-                  </p>
+
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-foreground mb-1">
+                      Seasonal Irrigation
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      Full-season coverage for up to 6 zones
+                    </p>
+                  </div>
+
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-foreground">$58</span>
+                      <span className="text-muted-foreground">/mo</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      $349 total over 6 monthly installments
+                    </p>
+                  </div>
+
+                  <ul className="space-y-3 mb-6 flex-grow">
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Drip line &amp; sprinkler head repair</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Valve covers (up to 6 zones)</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Fall winterization</span>
+                    </li>
+                  </ul>
+
+                  <Button
+                    className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        package: "irrigation",
+                        address: addressInput || "",
+                        yardSize: yardSize.toString(),
+                        perVisitPrice: "58",
+                        packageTotal: "349",
+                        addressUnverified: showAddressField ? "true" : "false",
+                      })
+                      router.push(`/checkout?${params.toString()}`)
+                    }}
+                  >
+                    Book Irrigation Service
+                  </Button>
                 </div>
 
-                <ul className="space-y-3 mb-6 flex-grow">
-                  <li className="flex items-start gap-3 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground">Drip line &amp; sprinkler head repair</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground">Valve covers (up to 6 zones)</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground">Fall winterization</span>
-                  </li>
-                </ul>
+                <div className="relative bg-card rounded-2xl p-6 md:p-8 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-foreground mb-1">
+                      Service Call
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      System inspection, minor adjustments, and a repair quote
+                    </p>
+                  </div>
 
-                <Button
-                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
-                  onClick={() => {
-                    const params = new URLSearchParams({
-                      package: "irrigation",
-                      address: addressInput || "",
-                      yardSize: yardSize.toString(),
-                      perVisitPrice: "349",
-                      packageTotal: "349",
-                      addressUnverified: showAddressField ? "true" : "false",
-                    })
-                    router.push(`/checkout?${params.toString()}`)
-                  }}
-                >
-                  Book Irrigation Service
-                </Button>
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-foreground">$200</span>
+                      <span className="text-muted-foreground">/visit</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Larger lawns may have a higher evaluation fee
+                    </p>
+                  </div>
+
+                  <ul className="space-y-3 mb-6 flex-grow">
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Full system inspection</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Minor adjustments included</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Quote for repairs &amp; improvements</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Repairs billed separately</span>
+                    </li>
+                  </ul>
+
+                  <Button
+                    className="w-full h-12 rounded-xl bg-foreground hover:bg-foreground/90 text-background font-medium mt-auto"
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        package: "irrigation-service-call",
+                        address: addressInput || "",
+                        yardSize: yardSize.toString(),
+                        perVisitPrice: "200",
+                        packageTotal: "200",
+                        addressUnverified: showAddressField ? "true" : "false",
+                      })
+                      router.push(`/checkout?${params.toString()}`)
+                    }}
+                  >
+                    Schedule Service Call
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -894,56 +841,34 @@ export default function HomePage() {
               </div>
 
               {(() => {
-                const planOptions: {
-                  id: MosquitoPlan
+                const sizeOptions: {
+                  id: MosquitoSize
                   name: string
                   subtitle: string
-                  price: number
-                  priceSuffix: string
-                  totalLabel: string
+                  perVisit: number
                 }[] = [
-                  {
-                    id: "full",
-                    name: "Pay in Full",
-                    subtitle: "Best value — one payment for the full season",
-                    price: 499,
-                    priceSuffix: "for the season",
-                    totalLabel: "One-time payment",
-                  },
-                  {
-                    id: "monthly",
-                    name: "Monthly",
-                    subtitle: "Spread across 8 monthly installments (Mar–Oct)",
-                    price: 62.38,
-                    priceSuffix: "/mo",
-                    totalLabel: "$499 total over 8 months (Mar–Oct)",
-                  },
-                  {
-                    id: "bimonthly",
-                    name: "Bi-Monthly",
-                    subtitle: "4 payments, billed every other month",
-                    price: 124.75,
-                    priceSuffix: "every 2 mo",
-                    totalLabel: "$499 total over 4 payments",
-                  },
+                  { id: "small", name: "Small", subtitle: "3–5,000 sq ft", perVisit: 63 },
+                  { id: "medium", name: "Medium", subtitle: "5–7,000 sq ft", perVisit: 73 },
+                  { id: "large", name: "Large", subtitle: "7–10,000 sq ft", perVisit: 81 },
                 ]
-                const selectedPlan =
-                  planOptions.find((p) => p.id === mosquitoPlan) ?? planOptions[0]
+                const selectedSize =
+                  sizeOptions.find((s) => s.id === mosquitoSize) ?? sizeOptions[0]
+                const seasonTotal = selectedSize.perVisit * 8
 
                 return (
                   <>
                     <div className="max-w-3xl mx-auto mb-8">
                       <p className="text-sm font-medium text-foreground mb-3 text-center">
-                        Select a payment option
+                        Select your yard size
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {planOptions.map((opt) => {
-                          const isSelected = opt.id === selectedPlan.id
+                        {sizeOptions.map((opt) => {
+                          const isSelected = opt.id === selectedSize.id
                           return (
                             <button
                               key={opt.id}
                               type="button"
-                              onClick={() => setMosquitoPlan(opt.id)}
+                              onClick={() => setMosquitoSize(opt.id)}
                               className={`text-left p-4 rounded-xl border transition-all ${
                                 isSelected
                                   ? "border-primary bg-primary/5 ring-2 ring-primary/30"
@@ -964,21 +889,24 @@ export default function HomePage() {
                     <div className="max-w-md mx-auto">
                       <div className="relative bg-card rounded-2xl p-6 md:p-8 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
                         <div className="mb-6">
-                          <h3 className="text-xl font-bold text-foreground mb-1">{selectedPlan.name}</h3>
-                          <p className="text-muted-foreground text-sm">{selectedPlan.subtitle}</p>
+                          <h3 className="text-xl font-bold text-foreground mb-1">
+                            {selectedSize.name} Yard
+                          </h3>
+                          <p className="text-muted-foreground text-sm">
+                            Full season coverage for {selectedSize.subtitle}
+                          </p>
                         </div>
 
                         <div className="mb-6">
                           <div className="flex items-baseline gap-1">
                             <span className="text-4xl font-bold text-foreground">
-                              ${selectedPlan.price.toLocaleString(undefined, {
-                                minimumFractionDigits: selectedPlan.price % 1 === 0 ? 0 : 2,
-                                maximumFractionDigits: 2,
-                              })}
+                              ${selectedSize.perVisit}
                             </span>
-                            <span className="text-muted-foreground">{selectedPlan.priceSuffix}</span>
+                            <span className="text-muted-foreground">/visit</span>
                           </div>
-                          <p className="text-sm text-muted-foreground mt-1">{selectedPlan.totalLabel}</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            ${seasonTotal} total over 8 visits (Mar–Oct)
+                          </p>
                         </div>
 
                         <ul className="space-y-3 mb-6 flex-grow">
@@ -1002,8 +930,8 @@ export default function HomePage() {
                               package: "mosquito",
                               address: addressInput || "",
                               yardSize: yardSize.toString(),
-                              perVisitPrice: selectedPlan.price.toString(),
-                              packageTotal: "499",
+                              perVisitPrice: selectedSize.perVisit.toString(),
+                              packageTotal: seasonTotal.toString(),
                               addressUnverified: showAddressField ? "true" : "false",
                             })
                             router.push(`/checkout?${params.toString()}`)
@@ -1049,7 +977,7 @@ export default function HomePage() {
                   Plant Healthcare
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  Annual care program for ornamental trees and shrubs (up to 12 specimens)
+                  Annual care program for ornamental trees and shrubs (up to 12 plants)
                 </p>
               </div>
 
@@ -1073,7 +1001,7 @@ export default function HomePage() {
                     <span className="text-muted-foreground">/visit</span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">
-                    $500/year total · up to 12 specimens
+                    $500/year total · up to 12 plants
                   </p>
                 </div>
 
