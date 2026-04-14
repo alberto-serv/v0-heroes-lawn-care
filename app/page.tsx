@@ -886,7 +886,7 @@ export default function HomePage() {
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-10">
                 <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
-                  Choose how you&apos;d like to pay
+                  Choose your Mosquito Control Plan
                 </h2>
                 <p className="text-muted-foreground text-sm">
                   Full season coverage (March–October) with eco-friendly, family-safe treatments
