@@ -1089,7 +1089,7 @@ export default function HomePage() {
                   Plant Healthcare
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  Annual care program for ornamental trees and shrubs (up to 12 specimens)
+                  Annual care program for ornamental trees and shrubs (up to 12 plants)
                 </p>
               </div>
 
@@ -1113,7 +1113,7 @@ export default function HomePage() {
                     <span className="text-muted-foreground">/visit</span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">
-                    $500/year total · up to 12 specimens
+                    $500/year total · up to 12 plants
                   </p>
                 </div>
 
