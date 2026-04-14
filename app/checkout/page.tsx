@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
 
-import { ArrowLeft, Check, MapPin, Loader2, LocateFixed, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowLeft, Calendar, Check, MapPin, Loader2, LocateFixed, ChevronDown, ChevronUp } from "lucide-react"
 
 const getPackagePrice = (packageId: string, yardSize: number) => {
   const pricingTable: Record<
@@ -754,6 +754,26 @@ export default function CheckoutPage() {
                         </ul>
                       )}
                     </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Your Schedule */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center text-base md:text-lg">Your Schedule</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-start gap-3 bg-green-50 p-4 md:p-6 rounded-lg">
+                  <Calendar className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-sm md:text-base font-semibold text-gray-900">
+                      Service starts in 3 business days
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      We&apos;ll reach out to confirm your first appointment and schedule ongoing visits.
+                    </p>
                   </div>
                 </div>
               </CardContent>

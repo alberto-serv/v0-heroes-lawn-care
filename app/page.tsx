@@ -1287,31 +1287,37 @@ export default function HomePage() {
                   { key: "medium", label: "Medium", subtitle: "3 garage bays, 2–3 car lengths", price: 425 },
                   { key: "long", label: "Large", subtitle: "Extra long or with turnaround", price: 500 },
                 ]
-                const sliderIndex = sizeOptions.findIndex((s) => s.key === snowDrivewayLength)
-                const currentSize = sizeOptions[sliderIndex === -1 ? 0 : sliderIndex]
+                const selectedIndex = sizeOptions.findIndex((s) => s.key === snowDrivewayLength)
+                const currentSize = sizeOptions[selectedIndex === -1 ? 0 : selectedIndex]
 
                 return (
                   <>
-                    <div className="max-w-xl mx-auto mb-10">
-                      <div className="p-5 rounded-xl bg-secondary/50 border border-border">
-                        <div className="flex items-center justify-between mb-3">
-                          <label className="text-sm font-medium text-foreground">Driveway size</label>
-                          <span className="text-sm font-semibold text-foreground">{currentSize.label}</span>
-                        </div>
-                        <Slider
-                          value={[sliderIndex === -1 ? 0 : sliderIndex]}
-                          onValueChange={(v) => setSnowDrivewayLength(sizeOptions[v[0]].key)}
-                          min={0}
-                          max={2}
-                          step={1}
-                          className="w-full"
-                        />
-                        <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                          <span>Small</span>
-                          <span>Medium</span>
-                          <span>Large</span>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-3">{currentSize.subtitle}</p>
+                    <div className="max-w-3xl mx-auto mb-10">
+                      <p className="text-sm font-medium text-foreground mb-3 text-center">
+                        Select your driveway size
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {sizeOptions.map((opt) => {
+                          const isSelected = opt.key === currentSize.key
+                          return (
+                            <button
+                              key={opt.key}
+                              type="button"
+                              onClick={() => setSnowDrivewayLength(opt.key)}
+                              className={`text-left p-4 rounded-xl border transition-all ${
+                                isSelected
+                                  ? "border-primary bg-primary/5 ring-2 ring-primary/30"
+                                  : "border-border bg-secondary/50 hover:border-primary/40"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-semibold text-foreground">{opt.label}</span>
+                                {isSelected && <Check className="w-4 h-4 text-primary" />}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{opt.subtitle}</p>
+                            </button>
+                          )
+                        })}
                       </div>
                     </div>
 
