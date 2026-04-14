@@ -329,50 +329,6 @@ export default function HomePage() {
 
             {/* Service Selection */}
             <div className="max-w-3xl mx-auto">
-              {/* FEED WEED PREP Hero Image - Only for Lawn Care */}
-              {selectedService === "fertilizer" && (
-                <div className="relative w-full h-28 md:h-36 rounded-xl overflow-hidden mb-4">
-                  <img
-                    src="/images/fertilizer-hero.png"
-                    alt="Lawn care services - Feed, Weed, Prep"
-                    className="w-full h-full object-cover object-bottom"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 flex pb-3">
-                    <div className="flex-1 flex items-end justify-center">
-                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg md:text-3xl">FEED</span>
-                    </div>
-                    <div className="flex-1 flex items-end justify-center">
-                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg md:text-3xl">WEED</span>
-                    </div>
-                    <div className="flex-1 flex items-end justify-center">
-                      <span className="text-white text-2xl font-bold tracking-wider drop-shadow-lg md:text-3xl">PREP</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Generic Hero Image for other services */}
-              {selectedService && selectedService !== "fertilizer" && selectedService !== "landscaping" && (
-                <div className="relative w-full h-28 md:h-36 rounded-xl overflow-hidden mb-4">
-                  <img
-                    src={
-                      selectedService === "irrigation"
-                        ? "/images/irrigation.png"
-                        : selectedService === "mosquito"
-                          ? "/images/mosquito-control.png"
-                          : selectedService === "plantcare"
-                            ? "/images/plant-healthcare.png"
-                            : selectedService === "petwaste"
-                              ? "/images/pet-waste-management.png"
-                              : "/images/snow-services.png"
-                    }
-                    alt={services.find((s) => s.id === selectedService)?.name ?? ""}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-
               <h2 className="font-semibold text-foreground mb-3 text-2xl md:text-3xl">Select a service</h2>
               <div className="flex flex-wrap justify-center gap-3 mb-3">
                 {services.map((service) => {
@@ -410,9 +366,53 @@ export default function HomePage() {
                 })}
               </div>
 
+              {/* FEED WEED PREP Hero Image - Only for Lawn Care */}
+              {selectedService === "fertilizer" && (
+                <div className="relative w-full h-40 md:h-56 rounded-xl overflow-hidden mt-4">
+                  <img
+                    src="/images/fertilizer-hero.png"
+                    alt="Lawn care services - Feed, Weed, Prep"
+                    className="w-full h-full object-cover object-bottom"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex pb-4">
+                    <div className="flex-1 flex items-end justify-center">
+                      <span className="text-white text-3xl font-bold tracking-wider drop-shadow-lg md:text-4xl">FEED</span>
+                    </div>
+                    <div className="flex-1 flex items-end justify-center">
+                      <span className="text-white text-3xl font-bold tracking-wider drop-shadow-lg md:text-4xl">WEED</span>
+                    </div>
+                    <div className="flex-1 flex items-end justify-center">
+                      <span className="text-white text-3xl font-bold tracking-wider drop-shadow-lg md:text-4xl">PREP</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Generic Hero Image for other services */}
+              {selectedService && selectedService !== "fertilizer" && selectedService !== "landscaping" && (
+                <div className="w-full rounded-xl overflow-hidden mt-4 bg-secondary">
+                  <img
+                    src={
+                      selectedService === "irrigation"
+                        ? "/images/irrigation.png"
+                        : selectedService === "mosquito"
+                          ? "/images/mosquito-control.png"
+                          : selectedService === "plantcare"
+                            ? "/images/plant-healthcare.png"
+                            : selectedService === "petwaste"
+                              ? "/images/pet-waste-management.png"
+                              : "/images/snow-services.png"
+                    }
+                    alt={services.find((s) => s.id === selectedService)?.name ?? ""}
+                    className="w-full h-auto block"
+                  />
+                </div>
+              )}
+
               {/* Service Blurb */}
               {selectedService && (
-                <p className="text-center max-w-xl mx-auto mt-2 text-base text-foreground font-medium">
+                <p className="text-center max-w-xl mx-auto mt-3 text-base text-foreground font-medium">
                   {services.find(s => s.id === selectedService)?.blurb}
                 </p>
               )}
