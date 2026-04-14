@@ -1081,7 +1081,7 @@ export default function HomePage() {
                     router.push(`/checkout?${params.toString()}`)
                   }}
                 >
-                  Enroll in Plant Healthcare
+                  Get Started
                 </Button>
               </div>
             </div>
@@ -1101,6 +1101,35 @@ export default function HomePage() {
                 <p className="text-muted-foreground text-sm">
                   Reliable, sanitary pickup so your yard stays clean and family-friendly
                 </p>
+              </div>
+
+              {/* Shared dog counter */}
+              <div className="max-w-sm mx-auto mb-8">
+                <div className="p-4 rounded-xl bg-secondary/50 border border-border">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-foreground">How many dogs?</label>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
+                        className="w-9 h-9 rounded-full border border-border bg-background flex items-center justify-center hover:bg-card transition-colors"
+                        aria-label="Decrease dog count"
+                      >
+                        −
+                      </button>
+                      <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
+                      <button
+                        type="button"
+                        onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
+                        disabled={numDogs >= 8}
+                        className="w-9 h-9 rounded-full border border-border bg-background flex items-center justify-center hover:bg-card transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-background"
+                        aria-label="Increase dog count"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1127,32 +1156,6 @@ export default function HomePage() {
                     <p className="text-sm text-muted-foreground mt-1">
                       $50 base + ${numDogs * 15} for {numDogs} dog{numDogs === 1 ? "" : "s"}
                     </p>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-secondary/50 mb-5">
-                    <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium text-foreground">How many dogs?</label>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
-                          className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
-                          aria-label="Decrease dog count"
-                        >
-                          −
-                        </button>
-                        <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
-                        <button
-                          type="button"
-                          onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
-                          disabled={numDogs >= 8}
-                          className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                          aria-label="Increase dog count"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
                   </div>
 
                   <ul className="space-y-3 mb-4 flex-grow">
@@ -1216,32 +1219,6 @@ export default function HomePage() {
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-secondary/50 mb-5">
-                    <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium text-foreground">How many dogs?</label>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setNumDogs(Math.max(1, numDogs - 1))}
-                          className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors"
-                          aria-label="Decrease dog count"
-                        >
-                          −
-                        </button>
-                        <span className="w-8 text-center font-semibold text-lg">{numDogs}</span>
-                        <button
-                          type="button"
-                          onClick={() => setNumDogs(Math.min(8, numDogs + 1))}
-                          disabled={numDogs >= 8}
-                          className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-background transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                          aria-label="Increase dog count"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
                   <ul className="space-y-3 mb-4 flex-grow">
                     <li className="flex items-start gap-3 text-sm">
                       <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
@@ -1290,107 +1267,156 @@ export default function HomePage() {
         <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-10">
+              <div className="text-center mb-8">
                 <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
                   Choose your Snow Service
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  Seasonal packages by driveway length, or pay per push
+                  Seasonal package by driveway size, or pay per push
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  {
-                    id: "small",
-                    name: "Small",
-                    subtitle: "Up to 2 garage bays, 1 car length",
-                    price: 350,
-                    priceSuffix: "/season",
-                    totalLabel: "One-time seasonal payment",
-                    snowKey: "short" as SnowDrivewayLength | "perPush",
-                  },
-                  {
-                    id: "medium",
-                    name: "Medium",
-                    subtitle: "3 garage bays, 2–3 car lengths",
-                    price: 425,
-                    priceSuffix: "/season",
-                    totalLabel: "One-time seasonal payment",
-                    snowKey: "medium" as SnowDrivewayLength | "perPush",
-                  },
-                  {
-                    id: "large",
-                    name: "Large",
-                    subtitle: "Extra long or with turnaround",
-                    price: 500,
-                    priceSuffix: "/season",
-                    totalLabel: "One-time seasonal payment",
-                    snowKey: "long" as SnowDrivewayLength | "perPush",
-                  },
-                  {
-                    id: "perpush",
-                    name: "Per Push",
-                    subtitle: "Pay as it snows — no season commitment",
-                    price: 50,
-                    priceSuffix: "/push",
-                    totalLabel: "Billed after each clearing",
-                    snowKey: "perPush" as SnowDrivewayLength | "perPush",
-                  },
-                ].map((tier) => (
-                  <div
-                    key={tier.id}
-                    className="relative bg-card rounded-2xl p-6 transition-all duration-300 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg"
-                  >
-                    <div className="mb-5">
-                      <h3 className="text-xl font-bold text-foreground mb-1">{tier.name}</h3>
-                      <p className="text-muted-foreground text-sm">{tier.subtitle}</p>
-                    </div>
+              {(() => {
+                const sizeOptions: {
+                  key: SnowDrivewayLength
+                  label: string
+                  subtitle: string
+                  price: number
+                }[] = [
+                  { key: "short", label: "Small", subtitle: "Up to 2 garage bays, 1 car length", price: 350 },
+                  { key: "medium", label: "Medium", subtitle: "3 garage bays, 2–3 car lengths", price: 425 },
+                  { key: "long", label: "Large", subtitle: "Extra long or with turnaround", price: 500 },
+                ]
+                const sliderIndex = sizeOptions.findIndex((s) => s.key === snowDrivewayLength)
+                const currentSize = sizeOptions[sliderIndex === -1 ? 0 : sliderIndex]
 
-                    <div className="mb-5">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-bold text-foreground">${tier.price}</span>
-                        <span className="text-muted-foreground text-sm">{tier.priceSuffix}</span>
+                return (
+                  <>
+                    <div className="max-w-xl mx-auto mb-10">
+                      <div className="p-5 rounded-xl bg-secondary/50 border border-border">
+                        <div className="flex items-center justify-between mb-3">
+                          <label className="text-sm font-medium text-foreground">Driveway size</label>
+                          <span className="text-sm font-semibold text-foreground">{currentSize.label}</span>
+                        </div>
+                        <Slider
+                          value={[sliderIndex === -1 ? 0 : sliderIndex]}
+                          onValueChange={(v) => setSnowDrivewayLength(sizeOptions[v[0]].key)}
+                          min={0}
+                          max={2}
+                          step={1}
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                          <span>Small</span>
+                          <span>Medium</span>
+                          <span>Large</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-3">{currentSize.subtitle}</p>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">{tier.totalLabel}</p>
                     </div>
 
-                    <ul className="space-y-3 mb-6 flex-grow">
-                      <li className="flex items-start gap-3 text-sm">
-                        <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span className="text-foreground">Driveway clearing after each snowfall</span>
-                      </li>
-                      <li className="flex items-start gap-3 text-sm">
-                        <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span className="text-foreground">Serviced by local crews</span>
-                      </li>
-                    </ul>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                      <div className="relative bg-card rounded-2xl p-6 transition-all duration-300 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg">
+                        <div className="mb-5">
+                          <h3 className="text-xl font-bold text-foreground mb-1">Seasonal</h3>
+                          <p className="text-muted-foreground text-sm">
+                            Full season coverage for a {currentSize.label.toLowerCase()} driveway
+                          </p>
+                        </div>
 
-                    <Button
-                      onClick={() => {
-                        if (tier.snowKey === "perPush") {
-                          setSnowPricingMode("perPush")
-                        } else {
-                          setSnowPricingMode("seasonal")
-                          setSnowDrivewayLength(tier.snowKey as SnowDrivewayLength)
-                        }
-                        const params = new URLSearchParams({
-                          package: "snow",
-                          address: addressInput || "",
-                          yardSize: yardSize.toString(),
-                          perVisitPrice: tier.price.toString(),
-                          packageTotal: tier.price.toString(),
-                          addressUnverified: showAddressField ? "true" : "false",
-                        })
-                        router.push(`/checkout?${params.toString()}`)
-                      }}
-                      className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
-                    >
-                      Select
-                    </Button>
-                  </div>
-                ))}
-              </div>
+                        <div className="mb-5">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-4xl font-bold text-foreground">${currentSize.price}</span>
+                            <span className="text-muted-foreground text-sm">/season</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">One-time seasonal payment</p>
+                        </div>
+
+                        <ul className="space-y-3 mb-6 flex-grow">
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">Unlimited clearings all season</span>
+                          </li>
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">Driveway clearing after each snowfall</span>
+                          </li>
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">Serviced by local crews</span>
+                          </li>
+                        </ul>
+
+                        <Button
+                          onClick={() => {
+                            setSnowPricingMode("seasonal")
+                            const params = new URLSearchParams({
+                              package: "snow",
+                              address: addressInput || "",
+                              yardSize: yardSize.toString(),
+                              perVisitPrice: currentSize.price.toString(),
+                              packageTotal: currentSize.price.toString(),
+                              addressUnverified: showAddressField ? "true" : "false",
+                            })
+                            router.push(`/checkout?${params.toString()}`)
+                          }}
+                          className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
+                        >
+                          Select
+                        </Button>
+                      </div>
+
+                      <div className="relative bg-card rounded-2xl p-6 transition-all duration-300 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg">
+                        <div className="mb-5">
+                          <h3 className="text-xl font-bold text-foreground mb-1">Per Push</h3>
+                          <p className="text-muted-foreground text-sm">Pay as it snows — no season commitment</p>
+                        </div>
+
+                        <div className="mb-5">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-4xl font-bold text-foreground">$50</span>
+                            <span className="text-muted-foreground text-sm">/push</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">Billed after each clearing</p>
+                        </div>
+
+                        <ul className="space-y-3 mb-6 flex-grow">
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">Driveway clearing after each snowfall</span>
+                          </li>
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">Serviced by local crews</span>
+                          </li>
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">No long-term commitment</span>
+                          </li>
+                        </ul>
+
+                        <Button
+                          onClick={() => {
+                            setSnowPricingMode("perPush")
+                            const params = new URLSearchParams({
+                              package: "snow",
+                              address: addressInput || "",
+                              yardSize: yardSize.toString(),
+                              perVisitPrice: "50",
+                              packageTotal: "50",
+                              addressUnverified: showAddressField ? "true" : "false",
+                            })
+                            router.push(`/checkout?${params.toString()}`)
+                          }}
+                          className="w-full h-12 rounded-xl bg-foreground hover:bg-foreground/90 text-background font-medium mt-auto"
+                        >
+                          Select
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )
+              })()}
             </div>
           </div>
         </section>
