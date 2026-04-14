@@ -893,93 +893,130 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
+              {(() => {
+                const planOptions: {
+                  id: MosquitoPlan
+                  name: string
+                  subtitle: string
+                  price: number
+                  priceSuffix: string
+                  totalLabel: string
+                }[] = [
                   {
-                    id: "full" as MosquitoPlan,
+                    id: "full",
                     name: "Pay in Full",
-                    subtitle: "Best value for the season",
+                    subtitle: "Best value — one payment for the full season",
                     price: 499,
                     priceSuffix: "for the season",
                     totalLabel: "One-time payment",
-                    features: [
-                      "Full season coverage (Mar–Oct)",
-                      "Family & pet-safe treatments",
-                      "Barrier treatments around yard",
-                      "No recurring billing",
-                    ],
                   },
                   {
-                    id: "monthly" as MosquitoPlan,
+                    id: "monthly",
                     name: "Monthly",
-                    subtitle: "Spread across the season",
+                    subtitle: "Spread across 8 monthly installments (Mar–Oct)",
                     price: 62.38,
                     priceSuffix: "/mo",
                     totalLabel: "$499 total over 8 months (Mar–Oct)",
-                    features: ["8 monthly installments"],
                   },
                   {
-                    id: "bimonthly" as MosquitoPlan,
+                    id: "bimonthly",
                     name: "Bi-Monthly",
-                    subtitle: "Pay every other month",
+                    subtitle: "4 payments, billed every other month",
                     price: 124.75,
                     priceSuffix: "every 2 mo",
                     totalLabel: "$499 total over 4 payments",
-                    features: ["4 bi-monthly installments"],
                   },
-                ].map((plan) => (
-                  <div
-                    key={plan.id}
-                    className="relative bg-card rounded-2xl p-6 md:p-8 transition-all duration-300 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg"
-                  >
+                ]
+                const selectedPlan =
+                  planOptions.find((p) => p.id === mosquitoPlan) ?? planOptions[0]
 
-                    <div className="mb-6">
-                      <h3 className="text-xl font-bold text-foreground mb-1">{plan.name}</h3>
-                      <p className="text-muted-foreground text-sm">{plan.subtitle}</p>
-                    </div>
-
-                    <div className="mb-6">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-bold text-foreground">
-                          ${plan.price.toLocaleString(undefined, {
-                            minimumFractionDigits: plan.price % 1 === 0 ? 0 : 2,
-                            maximumFractionDigits: 2,
-                          })}
-                        </span>
-                        <span className="text-muted-foreground">{plan.priceSuffix}</span>
+                return (
+                  <>
+                    <div className="max-w-3xl mx-auto mb-8">
+                      <p className="text-sm font-medium text-foreground mb-3 text-center">
+                        Select a payment option
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {planOptions.map((opt) => {
+                          const isSelected = opt.id === selectedPlan.id
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => setMosquitoPlan(opt.id)}
+                              className={`text-left p-4 rounded-xl border transition-all ${
+                                isSelected
+                                  ? "border-primary bg-primary/5 ring-2 ring-primary/30"
+                                  : "border-border bg-secondary/50 hover:border-primary/40"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-semibold text-foreground">{opt.name}</span>
+                                {isSelected && <Check className="w-4 h-4 text-primary" />}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{opt.subtitle}</p>
+                            </button>
+                          )
+                        })}
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">{plan.totalLabel}</p>
                     </div>
 
-                    <ul className="space-y-3 mb-6 flex-grow">
-                      {plan.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-3 text-sm">
-                          <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                          <span className="text-foreground">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="max-w-md mx-auto">
+                      <div className="relative bg-card rounded-2xl p-6 md:p-8 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+                        <div className="mb-6">
+                          <h3 className="text-xl font-bold text-foreground mb-1">{selectedPlan.name}</h3>
+                          <p className="text-muted-foreground text-sm">{selectedPlan.subtitle}</p>
+                        </div>
 
-                    <Button
-                      onClick={() => {
-                        setMosquitoPlan(plan.id)
-                        const params = new URLSearchParams({
-                          package: "mosquito",
-                          address: addressInput || "",
-                          yardSize: yardSize.toString(),
-                          perVisitPrice: plan.price.toString(),
-                          packageTotal: "499",
-                          addressUnverified: showAddressField ? "true" : "false",
-                        })
-                        router.push(`/checkout?${params.toString()}`)
-                      }}
-                      className="w-full h-12 rounded-xl font-medium mt-auto bg-primary hover:bg-primary/90 text-primary-foreground"
-                    >
-                      Get Started
-                    </Button>
-                  </div>
-                ))}
-              </div>
+                        <div className="mb-6">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-4xl font-bold text-foreground">
+                              ${selectedPlan.price.toLocaleString(undefined, {
+                                minimumFractionDigits: selectedPlan.price % 1 === 0 ? 0 : 2,
+                                maximumFractionDigits: 2,
+                              })}
+                            </span>
+                            <span className="text-muted-foreground">{selectedPlan.priceSuffix}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">{selectedPlan.totalLabel}</p>
+                        </div>
+
+                        <ul className="space-y-3 mb-6 flex-grow">
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">Full season coverage (Mar–Oct)</span>
+                          </li>
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">Family & pet-safe treatments</span>
+                          </li>
+                          <li className="flex items-start gap-3 text-sm">
+                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground">Barrier treatments around yard</span>
+                          </li>
+                        </ul>
+
+                        <Button
+                          onClick={() => {
+                            const params = new URLSearchParams({
+                              package: "mosquito",
+                              address: addressInput || "",
+                              yardSize: yardSize.toString(),
+                              perVisitPrice: selectedPlan.price.toString(),
+                              packageTotal: "499",
+                              addressUnverified: showAddressField ? "true" : "false",
+                            })
+                            router.push(`/checkout?${params.toString()}`)
+                          }}
+                          className="w-full h-12 rounded-xl font-medium mt-auto bg-primary hover:bg-primary/90 text-primary-foreground"
+                        >
+                          Get Started
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )
+              })()}
 
               <div className="mt-8 max-w-3xl mx-auto">
                 <div className="rounded-xl border border-border bg-secondary/40 p-4">
