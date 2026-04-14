@@ -806,7 +806,7 @@ export default function HomePage() {
       {selectedService === "irrigation" && (
         <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="max-w-md mx-auto">
+            <div className="max-w-3xl mx-auto">
               <div className="text-center mb-10">
                 <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
                   Irrigation Repair &amp; Maintenance
@@ -816,63 +816,122 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="relative bg-card rounded-2xl p-6 md:p-8 ring-2 ring-primary shadow-xl flex flex-col">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
-                    Seasonal Program
-                  </span>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-foreground mb-1">
-                    Seasonal Irrigation
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Full-season coverage for up to 6 zones
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-foreground">$349</span>
-                    <span className="text-muted-foreground">/season</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="relative bg-card rounded-2xl p-6 md:p-8 ring-2 ring-primary shadow-xl flex flex-col">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
+                      Seasonal Program
+                    </span>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    One flat rate for the full season
-                  </p>
+
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-foreground mb-1">
+                      Seasonal Irrigation
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      Full-season coverage for up to 6 zones
+                    </p>
+                  </div>
+
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-foreground">$58</span>
+                      <span className="text-muted-foreground">/mo</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      $349 total over 6 monthly installments
+                    </p>
+                  </div>
+
+                  <ul className="space-y-3 mb-6 flex-grow">
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Drip line &amp; sprinkler head repair</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Valve covers (up to 6 zones)</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Fall winterization</span>
+                    </li>
+                  </ul>
+
+                  <Button
+                    className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        package: "irrigation",
+                        address: addressInput || "",
+                        yardSize: yardSize.toString(),
+                        perVisitPrice: "58",
+                        packageTotal: "349",
+                        addressUnverified: showAddressField ? "true" : "false",
+                      })
+                      router.push(`/checkout?${params.toString()}`)
+                    }}
+                  >
+                    Book Irrigation Service
+                  </Button>
                 </div>
 
-                <ul className="space-y-3 mb-6 flex-grow">
-                  <li className="flex items-start gap-3 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground">Drip line &amp; sprinkler head repair</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground">Valve covers (up to 6 zones)</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-sm">
-                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground">Fall winterization</span>
-                  </li>
-                </ul>
+                <div className="relative bg-card rounded-2xl p-6 md:p-8 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-foreground mb-1">
+                      Service Call
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      System inspection, minor adjustments, and a repair quote
+                    </p>
+                  </div>
 
-                <Button
-                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
-                  onClick={() => {
-                    const params = new URLSearchParams({
-                      package: "irrigation",
-                      address: addressInput || "",
-                      yardSize: yardSize.toString(),
-                      perVisitPrice: "349",
-                      packageTotal: "349",
-                      addressUnverified: showAddressField ? "true" : "false",
-                    })
-                    router.push(`/checkout?${params.toString()}`)
-                  }}
-                >
-                  Book Irrigation Service
-                </Button>
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-foreground">$200</span>
+                      <span className="text-muted-foreground">/visit</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Larger lawns may have a higher evaluation fee
+                    </p>
+                  </div>
+
+                  <ul className="space-y-3 mb-6 flex-grow">
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Full system inspection</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Minor adjustments included</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Quote for repairs &amp; improvements</span>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm">
+                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-foreground">Repairs billed separately</span>
+                    </li>
+                  </ul>
+
+                  <Button
+                    className="w-full h-12 rounded-xl bg-foreground hover:bg-foreground/90 text-background font-medium mt-auto"
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        package: "irrigation-service-call",
+                        address: addressInput || "",
+                        yardSize: yardSize.toString(),
+                        perVisitPrice: "200",
+                        packageTotal: "200",
+                        addressUnverified: showAddressField ? "true" : "false",
+                      })
+                      router.push(`/checkout?${params.toString()}`)
+                    }}
+                  >
+                    Schedule Service Call
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

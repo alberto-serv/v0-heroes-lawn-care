@@ -191,6 +191,19 @@ export default function CheckoutPage() {
         "Fall winterization",
       ],
     },
+    "irrigation-service-call": {
+      name: "Irrigation Service Call",
+      subtitle:
+        "Includes inspection of the system with minor adjustments, and a quote for repairs and improvements. Larger lawns may have a higher evaluation fee. Repairs will have an additional cost.",
+      monthlyPrice: 200,
+      packageTotal: 200,
+      features: [
+        "Full system inspection",
+        "Minor adjustments included",
+        "Quote for repairs & improvements",
+        "Repairs billed separately",
+      ],
+    },
     mosquito: {
       name: "Mosquito Control",
       subtitle:
