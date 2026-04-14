@@ -12,7 +12,6 @@ import {
   AlertCircle,
   Leaf,
   Dog,
-  Droplets,
   Sparkles,
   Snowflake,
 } from "lucide-react"
@@ -197,13 +196,6 @@ export default function HomePage() {
       icon: "/images/icon-fertilizer-force.png",
     },
     {
-      id: "landscaping",
-      name: "Landscaping",
-      description: "Design, install & seasonal cleanup",
-      blurb: "From spring refreshes to full-yard transformations, our crews handle mulch, bed edging, planting, and landscape design so your property always looks its best.",
-      icon: "/images/icon-lawn-command.png",
-    },
-    {
       id: "irrigation",
       name: "Irrigation",
       description: "Repairs, maintenance & winterization",
@@ -216,6 +208,13 @@ export default function HomePage() {
       description: "Eco-friendly seasonal protection",
       blurb: "Reclaim your yard with our environmentally friendly mosquito control program. Full season coverage from March through October keeps your family comfortable all summer long.",
       icon: "/images/icon-mosquito-legion.png",
+    },
+    {
+      id: "landscaping",
+      name: "Landscaping",
+      description: "Design, install & seasonal cleanup",
+      blurb: "From spring refreshes to full-yard transformations, our crews handle mulch, bed edging, planting, and landscape design so your property always looks its best.",
+      icon: "/images/icon-lawn-command.png",
     },
     {
       id: "plantcare",
@@ -393,6 +392,27 @@ export default function HomePage() {
                       <span className="text-white text-3xl font-bold tracking-wider drop-shadow-lg md:text-4xl">PREP</span>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {/* Generic Hero Image for other services */}
+              {selectedService && selectedService !== "fertilizer" && selectedService !== "landscaping" && (
+                <div className="relative w-full h-40 md:h-56 rounded-xl overflow-hidden mt-6">
+                  <img
+                    src={
+                      selectedService === "irrigation"
+                        ? "/images/irrigation.png"
+                        : selectedService === "mosquito"
+                          ? "/images/mosquito-control.png"
+                          : selectedService === "plantcare"
+                            ? "/images/plant-healthcare.png"
+                            : selectedService === "petwaste"
+                              ? "/images/pet-waste-management.png"
+                              : "/images/snow-services.png"
+                    }
+                    alt={services.find((s) => s.id === selectedService)?.name ?? ""}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               )}
 
@@ -788,44 +808,61 @@ export default function HomePage() {
 
       {/* Irrigation Inline Form */}
       {selectedService === "irrigation" && (
-        <section className="pb-16">
+        <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-card rounded-2xl border border-border p-6 md:p-8 shadow-lg">
-                <div className="flex items-center gap-2 mb-3">
-                  <Droplets className="w-5 h-5 text-primary" />
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+            <div className="max-w-md mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
+                  Irrigation Repair &amp; Maintenance
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Seasonal program covering repairs, valve covers, and winterization
+                </p>
+              </div>
+
+              <div className="relative bg-card rounded-2xl p-6 md:p-8 ring-2 ring-primary shadow-xl flex flex-col">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
                     Seasonal Program
                   </span>
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  Irrigation Repair &amp; Maintenance
-                </h2>
-                <p className="text-muted-foreground mb-6">
-                  Repair of drip lines, sprinkler heads, and valve covers for up to six zones, plus end-of-season winterization.
-                </p>
-                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 p-5 rounded-xl bg-primary/5 border border-primary/20 mb-6">
-                  <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                      Seasonal Price
-                    </p>
-                    <p className="text-3xl md:text-4xl font-bold text-foreground">$349</p>
-                    <p className="text-sm text-muted-foreground">for the season (up to 6 zones)</p>
-                  </div>
-                  <ul className="text-sm text-foreground space-y-1.5">
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-primary" /> Drip line &amp; sprinkler head repair
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-primary" /> Valve covers (up to 6 zones)
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-primary" /> Fall winterization
-                    </li>
-                  </ul>
+
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-foreground mb-1">
+                    Seasonal Irrigation
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Full-season coverage for up to 6 zones
+                  </p>
                 </div>
+
+                <div className="mb-6">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-foreground">$349</span>
+                    <span className="text-muted-foreground">/season</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    One flat rate for the full season
+                  </p>
+                </div>
+
+                <ul className="space-y-3 mb-6 flex-grow">
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Drip line &amp; sprinkler head repair</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Valve covers (up to 6 zones)</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm">
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-foreground">Fall winterization</span>
+                  </li>
+                </ul>
+
                 <Button
-                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium mt-auto"
                   onClick={() => {
                     const params = new URLSearchParams({
                       package: "irrigation",
@@ -848,90 +885,134 @@ export default function HomePage() {
 
       {/* Mosquito Control Section */}
       {selectedService === "mosquito" && (
-        <section className="pb-16">
+        <section className="py-8 md:py-10 bg-card border-y border-border">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-card rounded-2xl border border-border p-6 md:p-10 shadow-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <Leaf className="w-5 h-5 text-green-600" />
-                  <span className="text-xs font-semibold text-green-700 uppercase tracking-wide">
-                    Environmentally Friendly
-                  </span>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  Seasonal Mosquito Control
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl md:text-3xl text-foreground mb-1 font-semibold">
+                  Choose your Mosquito Control Plan
                 </h2>
-                <p className="text-muted-foreground mb-6">
-                  Full season coverage from March through October using eco-friendly, family-safe treatments.
+                <p className="text-muted-foreground text-sm">
+                  Full season coverage (March–October) with eco-friendly, family-safe treatments
                 </p>
+              </div>
 
-                <div className="mb-4">
-                  <p className="text-sm font-semibold text-foreground mb-3">Choose your payment plan</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {[
-                      {
-                        id: "full" as MosquitoPlan,
-                        label: "Pay in Full",
-                        price: "$499",
-                        subtext: "one-time for the season",
-                      },
-                      {
-                        id: "monthly" as MosquitoPlan,
-                        label: "Monthly",
-                        price: "$62.38",
-                        subtext: "/mo × 8 (Mar–Oct)",
-                      },
-                      {
-                        id: "bimonthly" as MosquitoPlan,
-                        label: "Bi-Monthly",
-                        price: "$124.75",
-                        subtext: "every 2 mo × 4",
-                      },
-                    ].map((plan) => (
-                      <button
-                        key={plan.id}
-                        type="button"
-                        onClick={() => setMosquitoPlan(plan.id)}
-                        className={`text-left rounded-xl p-4 transition-all ${
-                          mosquitoPlan === plan.id
-                            ? "ring-2 ring-primary bg-primary/5"
-                            : "border border-border hover:border-primary/40"
-                        }`}
-                      >
-                        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                          {plan.label}
-                        </p>
-                        <p className="text-2xl font-bold text-foreground">{plan.price}</p>
-                        <p className="text-xs text-muted-foreground">{plan.subtext}</p>
-                      </button>
-                    ))}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    id: "full" as MosquitoPlan,
+                    name: "Pay in Full",
+                    subtitle: "Best value for the season",
+                    price: 499,
+                    priceSuffix: "for the season",
+                    totalLabel: "One-time payment",
+                    features: [
+                      "Full season coverage (Mar–Oct)",
+                      "Family & pet-safe treatments",
+                      "Barrier treatments around yard",
+                      "No recurring billing",
+                    ],
+                  },
+                  {
+                    id: "monthly" as MosquitoPlan,
+                    name: "Monthly",
+                    subtitle: "Spread across the season",
+                    price: 62.38,
+                    priceSuffix: "/mo",
+                    totalLabel: "$499 total over 8 months (Mar–Oct)",
+                    popular: true,
+                    features: [
+                      "Full season coverage (Mar–Oct)",
+                      "Family & pet-safe treatments",
+                      "Barrier treatments around yard",
+                      "8 monthly installments",
+                    ],
+                  },
+                  {
+                    id: "bimonthly" as MosquitoPlan,
+                    name: "Bi-Monthly",
+                    subtitle: "Pay every other month",
+                    price: 124.75,
+                    priceSuffix: "every 2 mo",
+                    totalLabel: "$499 total over 4 payments",
+                    features: [
+                      "Full season coverage (Mar–Oct)",
+                      "Family & pet-safe treatments",
+                      "Barrier treatments around yard",
+                      "4 bi-monthly installments",
+                    ],
+                  },
+                ].map((plan) => (
+                  <div
+                    key={plan.id}
+                    className={`relative bg-card rounded-2xl p-6 md:p-8 transition-all duration-300 flex flex-col ${
+                      plan.popular
+                        ? "ring-2 ring-primary shadow-xl scale-[1.02]"
+                        : "border border-border hover:border-primary/30 hover:shadow-lg"
+                    }`}
+                  >
+                    {plan.popular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-medium">
+                          Most Popular
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="mb-6">
+                      <h3 className="text-xl font-bold text-foreground mb-1">{plan.name}</h3>
+                      <p className="text-muted-foreground text-sm">{plan.subtitle}</p>
+                    </div>
+
+                    <div className="mb-6">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-bold text-foreground">
+                          ${plan.price.toLocaleString(undefined, {
+                            minimumFractionDigits: plan.price % 1 === 0 ? 0 : 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+                        <span className="text-muted-foreground">{plan.priceSuffix}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">{plan.totalLabel}</p>
+                    </div>
+
+                    <ul className="space-y-3 mb-6 flex-grow">
+                      {plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-start gap-3 text-sm">
+                          <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                          <span className="text-foreground">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Button
+                      onClick={() => {
+                        setMosquitoPlan(plan.id)
+                        const params = new URLSearchParams({
+                          package: "mosquito",
+                          address: addressInput || "",
+                          yardSize: yardSize.toString(),
+                          perVisitPrice: plan.price.toString(),
+                          packageTotal: "499",
+                          addressUnverified: showAddressField ? "true" : "false",
+                        })
+                        router.push(`/checkout?${params.toString()}`)
+                      }}
+                      className={`w-full h-12 rounded-xl font-medium mt-auto ${
+                        plan.popular
+                          ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                          : "bg-foreground hover:bg-foreground/90 text-background"
+                      }`}
+                    >
+                      Get Started
+                    </Button>
                   </div>
-                </div>
+                ))}
+              </div>
 
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 text-sm">
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Full season coverage (March–October)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Family &amp; pet-safe treatments</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Flexible installment options</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>Barrier treatments around your yard</span>
-                  </li>
-                </ul>
-
-                <p className="text-xs text-muted-foreground mb-6">
-                  Tick control available as an add-on at checkout.
-                </p>
-
-                <div className="mb-6 rounded-xl border border-border bg-secondary/40 p-4">
+              <div className="mt-8 max-w-3xl mx-auto">
+                <div className="rounded-xl border border-border bg-secondary/40 p-4">
                   <p className="text-sm text-foreground">
                     Powered by{" "}
                     <a
@@ -942,32 +1023,9 @@ export default function HomePage() {
                     >
                       In2Care
                     </a>
-                    , which delivers precise, targeted control of nuisance mosquitoes.
+                    , which delivers precise, targeted control of nuisance mosquitoes. Tick control available as an add-on at checkout.
                   </p>
                 </div>
-
-                <Button
-                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                  onClick={() => {
-                    const mosquitoPrices: Record<MosquitoPlan, number> = {
-                      full: 499,
-                      monthly: 62.38,
-                      bimonthly: 124.75,
-                    }
-                    const price = mosquitoPrices[mosquitoPlan]
-                    const params = new URLSearchParams({
-                      package: "mosquito",
-                      address: addressInput || "",
-                      yardSize: yardSize.toString(),
-                      perVisitPrice: price.toString(),
-                      packageTotal: price.toString(),
-                      addressUnverified: showAddressField ? "true" : "false",
-                    })
-                    router.push(`/checkout?${params.toString()}`)
-                  }}
-                >
-                  Request Mosquito Control
-                </Button>
               </div>
             </div>
           </div>
