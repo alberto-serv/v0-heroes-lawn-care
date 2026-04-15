@@ -10,8 +10,10 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
 import { Textarea } from "@/components/ui/textarea"
+import { DayPicker } from "react-day-picker"
+import "react-day-picker/style.css"
 
-import { ArrowLeft, Calendar, Check, MapPin, Loader2, LocateFixed, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowLeft, Check, MapPin, Loader2, LocateFixed, ChevronDown, ChevronUp } from "lucide-react"
 
 function addBusinessDays(date: Date, days: number) {
   const result = new Date(date)
@@ -22,13 +24,6 @@ function addBusinessDays(date: Date, days: number) {
     if (day !== 0 && day !== 6) added++
   }
   return result
-}
-
-function formatDateForInput(date: Date) {
-  const y = date.getFullYear()
-  const m = String(date.getMonth() + 1).padStart(2, "0")
-  const d = String(date.getDate()).padStart(2, "0")
-  return `${y}-${m}-${d}`
 }
 
 const getPackagePrice = (packageId: string, yardSize: number) => {
@@ -101,8 +96,8 @@ export default function CheckoutPage() {
   const [showFeatures, setShowFeatures] = useState(false)
   const [addressNotRecognized, setAddressNotRecognized] = useState(false)
 
-  const minStartDate = useMemo(() => formatDateForInput(addBusinessDays(new Date(), 3)), [])
-  const [preferredStartDate, setPreferredStartDate] = useState(minStartDate)
+  const minStartDateObj = useMemo(() => addBusinessDays(new Date(), 3), [])
+  const [preferredStartDateObj, setPreferredStartDateObj] = useState<Date>(minStartDateObj)
   const [scheduleComments, setScheduleComments] = useState("")
 
   // Helper function to parse address components
@@ -802,24 +797,18 @@ export default function CheckoutPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-start gap-3 bg-green-50 p-4 rounded-lg">
-                    <Calendar className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                    <p className="text-sm text-gray-700">
-                      The earliest available start date is 3 business days from today. Pick any
-                      later date that works for you.
-                    </p>
-                  </div>
-
                   <div>
-                    <Label htmlFor="preferredStartDate">Preferred start date</Label>
-                    <Input
-                      id="preferredStartDate"
-                      type="date"
-                      value={preferredStartDate}
-                      min={minStartDate}
-                      onChange={(e) => setPreferredStartDate(e.target.value)}
-                      className="mt-1"
-                    />
+                    <Label>Preferred start date</Label>
+                    <div className="mt-2 rounded-lg border border-border p-3 flex justify-center">
+                      <DayPicker
+                        mode="single"
+                        required
+                        selected={preferredStartDateObj}
+                        onSelect={(date) => date && setPreferredStartDateObj(date)}
+                        disabled={{ before: minStartDateObj }}
+                        defaultMonth={preferredStartDateObj}
+                      />
+                    </div>
                   </div>
 
                   <div>
