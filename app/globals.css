@@ -94,3 +94,11 @@
     font-family: var(--font-instrument-sans);
   }
 }
+
+/* React Day Picker: use brand green for selection/today highlights */
+.rdp-root {
+  --rdp-accent-color: hsl(var(--primary));
+  --rdp-accent-background-color: hsl(var(--primary) / 0.12);
+  --rdp-today-color: hsl(var(--primary));
+  --rdp-range_middle-background-color: hsl(var(--primary) / 0.15);
+}
