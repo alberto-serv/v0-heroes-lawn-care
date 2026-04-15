@@ -201,7 +201,7 @@ export default function HomePage() {
       id: "mosquito",
       name: "Mosquito Control",
       description: "Eco-friendly seasonal protection",
-      blurb: "Reclaim your yard with our environmentally friendly mosquito control program. Full season coverage from March through October keeps your family comfortable all summer long.",
+      blurb: "Reclaim your lot with our environmentally friendly mosquito control program. Full season coverage from March through October keeps your family comfortable all summer long.",
       icon: "/images/icon-mosquito-legion.png",
     },
     {
@@ -859,7 +859,7 @@ export default function HomePage() {
                   <>
                     <div className="max-w-3xl mx-auto mb-8">
                       <p className="text-sm font-medium text-foreground mb-3 text-center">
-                        Select your yard size
+                        Select your lot size
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {sizeOptions.map((opt) => {
@@ -890,7 +890,7 @@ export default function HomePage() {
                       <div className="relative bg-card rounded-2xl p-6 md:p-8 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300">
                         <div className="mb-6">
                           <h3 className="text-xl font-bold text-foreground mb-1">
-                            {selectedSize.name} Yard
+                            {selectedSize.name} Lot
                           </h3>
                           <p className="text-muted-foreground text-sm">
                             Full season coverage for {selectedSize.subtitle}
@@ -920,7 +920,7 @@ export default function HomePage() {
                           </li>
                           <li className="flex items-start gap-3 text-sm">
                             <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                            <span className="text-foreground">Barrier treatments around yard</span>
+                            <span className="text-foreground">Barrier treatments around lot</span>
                           </li>
                         </ul>
 
@@ -1247,10 +1247,11 @@ export default function HomePage() {
                   label: string
                   subtitle: string
                   price: number
+                  perPushPrice: number
                 }[] = [
-                  { key: "short", label: "Small", subtitle: "Up to 2 garage bays, 1 car length", price: 350 },
-                  { key: "medium", label: "Medium", subtitle: "3 garage bays, 2–3 car lengths", price: 425 },
-                  { key: "long", label: "Large", subtitle: "Extra long or with turnaround", price: 500 },
+                  { key: "short", label: "Small", subtitle: "Up to 2 garage bays, 1 car length", price: 350, perPushPrice: 50 },
+                  { key: "medium", label: "Medium", subtitle: "3 garage bays, 2–3 car lengths", price: 425, perPushPrice: 60 },
+                  { key: "long", label: "Large", subtitle: "Extra long or with turnaround", price: 500, perPushPrice: 70 },
                 ]
                 const selectedIndex = sizeOptions.findIndex((s) => s.key === snowDrivewayLength)
                 const currentSize = sizeOptions[selectedIndex === -1 ? 0 : selectedIndex]
@@ -1340,12 +1341,14 @@ export default function HomePage() {
                       <div className="relative bg-card rounded-2xl p-6 transition-all duration-300 flex flex-col border border-border hover:border-primary/30 hover:shadow-lg">
                         <div className="mb-5">
                           <h3 className="text-xl font-bold text-foreground mb-1">Per Push</h3>
-                          <p className="text-muted-foreground text-sm">Pay as it snows — no season commitment</p>
+                          <p className="text-muted-foreground text-sm">
+                            Pay as it snows for a {currentSize.label.toLowerCase()} driveway — no season commitment
+                          </p>
                         </div>
 
                         <div className="mb-5">
                           <div className="flex items-baseline gap-1">
-                            <span className="text-4xl font-bold text-foreground">$50</span>
+                            <span className="text-4xl font-bold text-foreground">${currentSize.perPushPrice}</span>
                             <span className="text-muted-foreground text-sm">/push</span>
                           </div>
                           <p className="text-sm text-muted-foreground mt-1">Billed after each clearing</p>
@@ -1373,8 +1376,8 @@ export default function HomePage() {
                               package: "snow",
                               address: addressInput || "",
                               yardSize: yardSize.toString(),
-                              perVisitPrice: "50",
-                              packageTotal: "50",
+                              perVisitPrice: currentSize.perPushPrice.toString(),
+                              packageTotal: currentSize.perPushPrice.toString(),
                               addressUnverified: showAddressField ? "true" : "false",
                             })
                             router.push(`/checkout?${params.toString()}`)
