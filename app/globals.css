@@ -95,10 +95,13 @@
   }
 }
 
-/* React Day Picker: use brand green for selection/today highlights */
-.rdp-root {
+/* React Day Picker: use brand green for selection/today highlights.
+   Doubled class bumps specificity above the library's default sheet. */
+.rdp-root.rdp-root {
   --rdp-accent-color: hsl(var(--primary));
   --rdp-accent-background-color: hsl(var(--primary) / 0.12);
   --rdp-today-color: hsl(var(--primary));
   --rdp-range_middle-background-color: hsl(var(--primary) / 0.15);
+  --rdp-range_start-date-background-color: hsl(var(--primary));
+  --rdp-range_end-date-background-color: hsl(var(--primary));
 }
